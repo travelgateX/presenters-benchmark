@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+
+package search;
+
+service Searcher {
+    rpc Search() returns (SearchReply) {}
+}
+
+message SearchReply {
+    repeated Option options = 1;
+}
+
+message Option {
+    string supplierCode = 1;
+	string accessCode = 2;
+	string market = 3;
+	string hotelCode = 4;
+    string hotelCodeSupplier = 5;
+	optional string hotelName = 6;
+    string boardCode = 7;
+    string boardCodeSupplier = 8;
+	PaymentType paymentType = 9;
+	StatusType statusType = 10;    
+	repeated Occupancy occupancies = 11;
+	repeated Room rooms = 12;   
+	Price price = 13;    
+	repeated Supplement supplements = 14;
+	repeated Surcharge surcharges = 15;
+	repeated RateRuleType rateRules = 16;
+	optional CancelPolicy cancelPolicy = 17;
+	optional string remarks = 18;    
+	optional AddOns addons = 19;
+    string token = 20;
+    string id = 21;
+}
+
+enum PaymentType {
+    MERCHANT = 0;
+    DIRECT = 1;
+    CARD_BOOKING = 2;
+    CARD_CHECK_IN = 3;  
+}
+
+enum StatusType {
+    OK = 0;
+    RQ = 1;
+}

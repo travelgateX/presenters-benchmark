@@ -1,0 +1,291 @@
+query {
+  hotelX {
+    search{
+      options {
+        price {
+          currency
+          binding
+          net
+          gross
+          exchange {
+            currency
+            rate
+          }
+          markups {
+            channel
+            currency
+            binding
+            net
+            gross
+            exchange {
+              currency
+              rate
+            }
+          }
+        }
+        addOns {
+          distribute
+        }
+        supplements {
+          code
+          name
+          description
+          supplementType
+          chargeType
+          mandatory
+          durationType
+          quantity
+          unit
+          effectiveDate
+          expireDate
+          resort {
+            code
+            name
+            description
+          }
+          price {
+            currency
+            binding
+            net
+            gross
+            exchange {
+              currency
+              rate
+            }
+            markups {
+              channel
+              currency
+              binding
+              net
+              gross
+              exchange {
+                currency
+                rate
+              }
+            }
+          }
+        }
+        surcharges {
+          chargeType
+          description
+          price {
+            currency
+            binding
+            net
+            gross
+            exchange {
+              currency
+              rate
+            }
+            markups {
+              channel
+              currency
+              binding
+              net
+              gross
+              exchange {
+                currency
+                rate
+              }
+            }
+          }
+        }
+        rateRules
+        cancelPolicy {
+          refundable
+          cancelPenalties {
+            hoursBefore
+            penaltyType
+            currency
+            value
+          }
+        }
+        remarks
+        token
+        id
+      }
+    }
+  }
+}
+
+{
+	"criteriaSearch": {
+		"market": "GB",
+		"nationality": "GB",
+		"checkOut": "2019-05-08",
+		"language": "en",
+		"checkIn": "2019-05-01",
+		"currency": "GBP",
+		"occupancies": [
+			{
+				"paxes": [
+					{
+						"age": 30
+					},
+					{
+						"age": 30
+					}
+				]
+			}
+		],
+		"hotels": [
+			"20698",
+			"43575",
+			"21545",
+			"46603",
+			"398238",
+			"45992",
+			"338172",
+			"398234",
+			"17043",
+			"349065",
+			"46609",
+			"297531",
+			"390513",
+			"45758",
+			"390515",
+			"390514",
+			"53385",
+			"53143",
+			"390516",
+			"30025",
+			"54479",
+			"2786",
+			"1454",
+			"53146",
+			"290904",
+			"55329",
+			"341337",
+			"250208",
+			"398249",
+			"45502",
+			"375587",
+			"398244",
+			"19231",
+			"398246",
+			"40297",
+			"405082",
+			"258188",
+			"1470",
+			"43329",
+			"34613",
+			"13936",
+			"400868",
+			"52066",
+			"54485",
+			"55574",
+			"31343",
+			"53152",
+			"35700",
+			"402803",
+			"53153",
+			"52064",
+			"55337",
+			"328360",
+			"32670",
+			"327274",
+			"3883",
+			"31109",
+			"402809",
+			"398250",
+			"89593",
+			"45734",
+			"43798",
+			"3660",
+			"398213",
+			"45730",
+			"40044",
+			"55340",
+			"54490",
+			"54259",
+			"13908",
+			"53168",
+			"6920",
+			"813",
+			"42211",
+			"17036",
+			"399318",
+			"399553",
+			"16183",
+			"54266",
+			"55597",
+			"10887",
+			"54265",
+			"54264",
+			"55594",
+			"29252",
+			"1001",
+			"59952",
+			"307420",
+			"265742",
+			"44864",
+			"358818",
+			"285754",
+			"2111",
+			"45717",
+			"400441",
+			"53184",
+			"53181",
+			"27285",
+			"31311",
+			"54277"
+		]
+	},
+	"filter": null,
+	"settings": {
+		"auditTransactions": false,
+		"client": "hoco_txt",
+		"clientTokens": [
+			"350"
+		],
+		"context": null,
+		"plugins": [
+			{
+				"pluginsType": [
+					{
+						"name": "markup",
+						"parameters": [
+							{
+								"key": "channel",
+								"value": "350"
+							}
+						],
+						"type": "MARKUP"
+					}
+				],
+				"step": "RESPONSE_OPTION"
+			},
+			{
+				"pluginsType": [
+					{
+						"name": "room_description_mapX",
+						"parameters": null,
+						"type": "ROOM_MAP"
+					}
+				],
+				"step": "RESPONSE_OPTION"
+			},
+			{
+				"pluginsType": [
+					{
+						"name": "currency_exchange",
+						"parameters": [
+							{
+								"key": "currency",
+								"value": "GBP"
+							},
+							{
+								"key": "exclude",
+								"value": "true"
+							}
+						],
+						"type": "CURRENCY_CONVERSION"
+					}
+				],
+				"step": "RESPONSE_OPTION"
+			}
+		],
+		"testMode": false,
+		"timeout": 15000
+	}
+}

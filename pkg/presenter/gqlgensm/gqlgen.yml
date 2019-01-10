@@ -1,0 +1,118 @@
+struct_tag: gqlgen
+
+schema:
+- schema.graphql
+exec:
+  filename: generated.go
+model:
+  filename: models_gen.go
+resolver:
+  filename: resolver.go
+  type: Resolver
+models:
+  RoomInput:    
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Occupancy
+  PaxInput:    
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Pax
+  HotelSettingsInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Settings
+  BusinessRulesInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.BusinessRules
+  HotelXSupplierInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Supplier
+  PluginStepInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.PluginStep
+  PluginsInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Plugin
+  ParameterInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/access.Parameter
+  SettingsBaseInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.SettingsBase
+  BusinessRulesType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.BusinessRulesType
+  HotelXAccessInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Access
+  PluginType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.PluginType
+  PluginStepType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.PluginStepType
+  ConfigurationInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/access.AccessConfiguration
+  RateRulesType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/access.RateRulesType
+  UrlsInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/access.Urls
+  HotelXFilterSearchInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/search.FilterSearch
+  FilterInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/search.Filter
+  AccessFilterInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/search.TypeFilter
+  HotelXPluginFilterInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.FilterPluginType
+  HotelXFilterPluginTypeInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.FilterPlugin
+  RateRulesFilterInput:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/search.RateRuleFilter
+
+  Error: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/common.AdviseMessage
+  Warning: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/common.AdviseMessage
+  AuditData: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/common.AuditData
+  Transactions: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/common.Transactions
+
+  HotelOptionSearch: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Option
+  PaymentType: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.PaymentType
+  StatusType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.StatusType
+  Occupancy: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Occupancy
+  Pax: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Pax
+  Room: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Room
+  Bed: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Bed
+  Markup: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Markup
+  MarkupRuleType: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.MarkupRuleType
+  Rule: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Rule
+  CancelPolicy: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPolicy
+  CancelPenalty: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPenalty
+  CancelPenaltyType: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPenaltyType
+  Price: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Price
+  RatePlan: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.RatePlan
+  Exchange: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Exchange
+  RoomPrice: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.RoomPrice
+  PriceBreakdown: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.PriceBreakDown
+  Supplement: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Supplement
+  SupplementType: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.SupplementType
+  ChargeType: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.ChargeType
+  UnitTimeType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.UnitTimeType
+  DurationType:
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.DurationType
+  Surcharge: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Surcharge
+  Promotion: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Promotion
+  Resort: 
+    model: "rfc/presenters/pkg/presenter"/gqlgensm/domainHotelCommon.Resort
