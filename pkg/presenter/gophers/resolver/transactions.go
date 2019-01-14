@@ -1,8 +1,7 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-	"rfc/presenters/pkg/common"
+	"presenters-benchmark/pkg/common"
 )
 
 type TransactionsResolver struct {
@@ -17,6 +16,6 @@ func (r *TransactionsResolver) Response() string {
 	return r.Transactions.Response
 }
 
-func (r *TransactionsResolver) TimeStamp() graphql.DateTime {
-	return graphql.DateTime(r.Transactions.TimeStamp)
+func (r *TransactionsResolver) TimeStamp() DateTime {
+	return DateTime(r.Transactions.TimeStamp)
 }

@@ -1,9 +1,9 @@
 package restmapping
 
 import (
-	"rfc/presenters/pkg/access"
-	"rfc/presenters/pkg/domainHotelCommon"
-	"rfc/presenters/pkg/presenter"
+	"presenters-benchmark/pkg/access"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/presenter"
 )
 
 type Response struct {

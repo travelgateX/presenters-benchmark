@@ -2,9 +2,8 @@ package graphResolver
 
 import (
 	"context"
-	"hub-aggregator/common/graphservice/hotelx"
-	"rfc/presenters/pkg/common"
-	"rfc/presenters/pkg/search"
+	"presenters-benchmark/pkg/common"
+	"presenters-benchmark/pkg/search"
 )
 
 type HotelSearchResolver struct {
@@ -25,19 +24,12 @@ func (r *HotelSearchResolver) Context() *string {
 	return r.rq.Settings.Context
 }
 
-func (r *HotelSearchResolver) Stats(args struct{ Token string }) *hotelx.StatsResolver {
-	if r.rs == nil || args.Token != "sucLH5TC8NPbDAH5gBgaJLQ0BE0IqnYnk8" {
-		return nil
-	}
-	return &hotelx.StatsResolver{Stats: r.rs.Stats}
+func (r *HotelSearchResolver) Stats(args struct{ Token string }) *StatsResolver {
+	return nil
 }
 
 func (r *HotelSearchResolver) AuditData() *AuditDataResolver {
-	if r.rs == nil || r.rs.AuditData == nil {
-		return nil
-	}
-
-	return &AuditDataResolver{AuditData: r.rs.AuditData, times: r.rs.Stats.Total}
+	return nil
 }
 
 func (r *HotelSearchResolver) RequestCriteria() *CriteriaRequestResolver {
@@ -90,4 +82,156 @@ func (r *HotelSearchResolver) Warnings() *[]*WarningResolver {
 		wr[i] = &WarningResolver{warning: w}
 	}
 	return &wr
+}
+
+type StatsResolver struct {
+}
+
+func (r *StatsResolver) Total() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatsResolver) Validation() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatsResolver) Process() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+func (r *StatsResolver) Configuration() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+// deprecated
+func (r *StatsResolver) Request() *StatResolver {
+	return &StatResolver{}
+}
+func (r *StatsResolver) Response() *StatResolver {
+	return &StatResolver{}
+}
+func (r *StatsResolver) RequestPlugin() *StatPluginResolver {
+	statResolver := StatPluginResolver{}
+	return &statResolver
+}
+func (r *StatsResolver) ResponsePlugin() *StatPluginResolver {
+	statResolver := StatPluginResolver{}
+	return &statResolver
+}
+
+func (r *StatsResolver) Accesses() []*StatAccessResolver {
+	return nil
+}
+
+func (r *StatsResolver) Hotels() int32 {
+	return int32(0)
+}
+func (r *StatsResolver) Zones() int32 {
+	return int32(0)
+}
+func (r *StatsResolver) Cities() int32 {
+	return int32(0)
+}
+func (r *StatsResolver) DockerID() string {
+	return ""
+}
+
+type StatResolver struct {
+}
+
+func (r *StatResolver) Start() DateTime {
+	return ""
+}
+
+func (r *StatResolver) End() DateTime {
+	return ""
+}
+
+func (r *StatResolver) Duration() *float64 {
+	return nil
+}
+
+type StatAccessResolver struct {
+}
+
+func (r *StatAccessResolver) Name() string {
+	return ""
+}
+
+func (r *StatAccessResolver) Total() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatAccessResolver) StaticConfiguration() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatAccessResolver) Transactions() []*StatTransactionResolver {
+	return nil
+}
+
+func (r *StatAccessResolver) Plugins() *[]*StatPluginResolver {
+	return nil
+}
+
+func (r *StatAccessResolver) Hotels() int32 {
+	return int32(0)
+}
+func (r *StatAccessResolver) Zones() int32 {
+	return int32(0)
+}
+func (r *StatAccessResolver) Cities() int32 {
+	return int32(0)
+}
+
+func (r *StatAccessResolver) RequestAccess() *StatPluginResolver {
+	statPluginResolver := StatPluginResolver{}
+	return &statPluginResolver
+}
+func (r *StatAccessResolver) ResponseAccess() *StatPluginResolver {
+	statPluginResolver := StatPluginResolver{}
+	return &statPluginResolver
+}
+
+type StatPluginResolver struct{}
+
+func (r *StatPluginResolver) Name() string {
+	return ""
+}
+
+func (r *StatPluginResolver) Total() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+type StatTransactionResolver struct {
+}
+
+func (r *StatTransactionResolver) Reference() string {
+	return ""
+}
+
+func (r *StatTransactionResolver) Total() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatTransactionResolver) BuildRequest() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatTransactionResolver) WorkerCommunication() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
+}
+
+func (r *StatTransactionResolver) ParseResponse() *StatResolver {
+	statResolver := StatResolver{}
+	return &statResolver
 }

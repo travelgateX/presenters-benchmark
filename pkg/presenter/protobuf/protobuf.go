@@ -1,7 +1,8 @@
-package rest
+package protobuf
 
 import (
 	"encoding/json"
+	"github.com/golang/protobuf/proto"
 	"net/http"
 	"presenters-benchmark/pkg/presenter"
 )
@@ -10,7 +11,7 @@ type Candidate struct{}
 
 var _ presenter.CandidateHandlerFunc = (*Candidate)(nil)
 
-func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
+func (c Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var params struct {
 			Query         string                 `json:"query"`
@@ -18,24 +19,31 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 			Variables     map[string]interface{} `json:"variables"`
 		}
 		// mandatory to check this in all example
-
 		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		// deserialize and return option
-		w.Write(prefix)
-		err := json.NewEncoder(w).Encode(options)
-		w.Write(sufix)
+
+		b, err := c.MarshalSearchReply(NewResponse(options))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		w.Write(b)
 	}, nil
 }
 
-func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
-	return presenter.JSONUnmarshalOptions(b)
+func (Candidate) MarshalSearchReply(sr *SearchReply) ([]byte, error) {
+	return proto.Marshal(sr)
 }
 
-var prefix = []byte(`{"data": {"hotelX": {"search": {"options": `)
-var sufix = []byte(`,"errors": {"code": "","type": "","description": ""}}}}}`)
+func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
+	var sr SearchReply
+	err := proto.Unmarshal(b, &sr)
+	if err != nil {
+		return nil, err
+	}
+
+	// json.NewEncoder(os.Stdout).Encode(sr)
+	// TODO: reverse parsing?....
+	return nil, nil
+}

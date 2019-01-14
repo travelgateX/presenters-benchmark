@@ -2,8 +2,8 @@ package gqlgen
 
 import (
 	"context"
-	"rfc/presenters/pkg/domainHotelCommon"
-	"rfc/presenters/pkg/presenter"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/presenter"
 )
 
 type Resolver struct {

@@ -1,9 +1,7 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type SupplementResolver struct {
@@ -50,19 +48,19 @@ func (r *SupplementResolver) Unit() *domainHotelCommon.UnitTimeType {
 	return (*r.Supplement).Unit
 }
 
-func (r *SupplementResolver) EffectiveDate() *graphql.Date {
+func (r *SupplementResolver) EffectiveDate() *Date {
 	if (*r.Supplement).EffectiveDate == nil {
 		return nil
 	}
-	tmp := graphql.Date(*(*r.Supplement).EffectiveDate)
+	tmp := Date(*(*r.Supplement).EffectiveDate)
 	return &tmp
 }
 
-func (r *SupplementResolver) ExpireDate() *graphql.Date {
+func (r *SupplementResolver) ExpireDate() *Date {
 	if (*r.Supplement).ExpireDate == nil {
 		return nil
 	}
-	tmp := graphql.Date(*(*r.Supplement).ExpireDate)
+	tmp := Date(*(*r.Supplement).ExpireDate)
 	return &tmp
 }
 

@@ -1,7 +1,7 @@
-# Presenters
+# Presenters 
 
 This is a repository to compare different types of presenters in means of performance.
-We are measuring the serialization of Options to an HTTP Response Body, where Options are always the same mock. All implementations must return the same response.
+We are measuring the serialization of Options to an HTTP Response Body, where Options are always the same mock
 
 
 ## Implementations
@@ -30,7 +30,7 @@ type CandidateHandlerFunc interface {
 
 A valid candidate must pass tests in [candidate.go](pkg/presenter/candidate.go).
 
-Usage example of the [gophers](pkg/presenter/gophers/gophers_test.go) implementation:
+Usage example of the [gophers](pkg/presenter/gophers/gophers_test.go) implementation: 
 
 ```go
 func TestCandidate(t *testing.T) {
@@ -44,8 +44,8 @@ To run the benchmarks, run 'BenchmarkSequential'  or 'BenchmarkParallel' in [ben
 
 Use [this excel](benchmark/graphics.xlsx) to build graphics
 
-### Sample
-PC: Ubuntu 16.04, 7.7 GiB mem, Intel Core i5-3230M CPU @ 2.60GHz × 4
+### Sample 
+PC: Ubuntu 16.04, 7.7 GiB mem, Intel Core i5-3230M CPU @ 2.60GHz × 4  
 
 Request: [high resolve scale](benchmark/resolveScale_high.txt)
 

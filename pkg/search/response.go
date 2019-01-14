@@ -1,8 +1,8 @@
 package search
 
 import (
-	"rfc/presenters/pkg/common"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/common"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type HotelSearchRS struct {

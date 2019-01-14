@@ -3,7 +3,7 @@ package domainHotelCommon
 import (
 	"fmt"
 	"io"
-	"rfc/presenters/pkg/access"
+	"presenters-benchmark/pkg/access"
 	"strconv"
 )
 

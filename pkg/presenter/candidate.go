@@ -5,64 +5,29 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
-
-	"hub-aggregator/common/kit/routing"
-	"hub-aggregator/common/stats"
 )
 
+// CandidateHandlerFunc is the interface used to benchmark
 type CandidateHandlerFunc interface {
+	// HandlerFunc returned must write the given options in the response body
 	HandlerFunc(options []*Option) (http.HandlerFunc, error)
+	// UnmarshalOptions must take the bytes of a responseBody and unmarshal them to Options
+	UnmarshalOptions([]byte) ([]*Option, error)
 }
 
-type CandidateServer interface {
-	NewServer(addr, pattern string, options []*Option, results chan<- OperationResult) (*routing.Server, error)
-}
-
-func NewGzipCandidateServer(addr, pattern string, handlerFunc http.HandlerFunc, mws ...routing.Middleware) *routing.Server {
-	mws = append(mws, routing.GzipCompress())
-	return routing.NewServer(
-		addr,
-		[]routing.Route{
-			routing.Route{
-				Name:              "Candidate",
-				Method:            "POST",
-				Pattern:           pattern,
-				Middlewares:       mws,
-				ServiceHandleFunc: handlerFunc,
-			},
-		},
-	)
-}
-
-func TotalTimeMiddleware(results chan<- OperationResult) routing.Middleware {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			time := OperationResult{}
-			startTime := stats.UtcNow()
-			next.ServeHTTP(w, r)
-			time.TotalTime = stats.NewTimes(startTime)
-			results <- time
-		})
+// JSONUnmarshalOptions is a valid UnmarshalOptions func for those implementations that write
+// a JSON encoded 'Response' in the response body
+func JSONUnmarshalOptions(b []byte) ([]*Option, error) {
+	var res Response
+	err := json.Unmarshal(b, &res)
+	if err != nil {
+		return nil, err
 	}
+	return res.Data.HotelX.Search.Options, nil
 }
 
-type Response struct {
-	Data struct {
-		HotelX struct {
-			Search struct {
-				Options []Option `json:"options"`
-				Errors  struct {
-					Code        string `json:"code"`
-					Type        string `json:"type"`
-					Description string `json:"description"`
-				} `json:"errors"`
-			} `json:"search"`
-		} `json:"hotelX"`
-	} `json:"data"`
-}
-
+// TestCandidateHandleFunc tests that a candidate encodes options correctly
 func TestCandidateHandleFunc(t *testing.T, c CandidateHandlerFunc) {
 	opts := NewOptionsGen().Gen(100)
 	hf, err := c.HandlerFunc(opts)
@@ -86,27 +51,26 @@ func TestCandidateHandleFunc(t *testing.T, c CandidateHandlerFunc) {
 	}
 
 	// deserialize option, it must be the same as the generated
-	var res Response
-	json.Unmarshal(rr.Body.Bytes(), &res)
+	var retOpts []*Option
+	retOpts, err = c.UnmarshalOptions(rr.Body.Bytes())
+	if err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
 
-	if len(opts) != len(res.Data.HotelX.Search.Options) {
-		t.Fatalf("different len of options generated vs returned len: %v, %v", len(opts), len(res.Data.HotelX.Search.Options))
+	if len(opts) != len(retOpts) {
+		t.Fatalf("different len of options generated vs returned len: %v, %v", len(opts), len(retOpts))
 	}
 	for i := range opts {
-		if !optEquals(*opts[i], res.Data.HotelX.Search.Options[i]) {
-			b1, err := json.Marshal(*opts[i])
+		if !OptionEquals(opts[i], retOpts[i]) {
+			b1, err := json.Marshal(*retOpts[i])
 			if err != nil {
 				t.Errorf("error marshalling opt: %v", err)
 			}
-			b2, err := json.Marshal(res.Data.HotelX.Search.Options[i])
+			b2, err := json.Marshal(retOpts[i])
 			if err != nil {
 				t.Errorf("error marshalling opt: %v", err)
 			}
 			t.Fatalf("options are not serialized correctly: opt1: %s\nopt2: %s ", string(b1), string(b2))
 		}
 	}
-}
-
-func optEquals(opt1, opt2 Option) bool {
-	return reflect.DeepEqual(opt1, opt2)
 }

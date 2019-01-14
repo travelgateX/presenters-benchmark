@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"rfc/presenters/pkg/presenter"
-	"rfc/presenters/pkg/presenter/gqlgen"
+	"presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter/gqlgen"
 
 	"github.com/99designs/gqlgen/handler"
 )

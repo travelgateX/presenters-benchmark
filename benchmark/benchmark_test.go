@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"rfc/presenters/pkg/presenter"
-	"rfc/presenters/pkg/presenter/gophers"
-	"rfc/presenters/pkg/presenter/gqlgen"
-	gqlgensm "rfc/presenters/pkg/presenter/gqlgensm"
-	"rfc/presenters/pkg/presenter/rest"
-	"rfc/presenters/pkg/presenter/restmapping"
+	"presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter/gophers"
+	"presenters-benchmark/pkg/presenter/gqlgen"
+	gqlgensm "presenters-benchmark/pkg/presenter/gqlgensm"
+	"presenters-benchmark/pkg/presenter/protobuf"
+	"presenters-benchmark/pkg/presenter/rest"
+	"presenters-benchmark/pkg/presenter/restmapping"
 	"testing"
+	"time"
 )
 
 // Variables:
@@ -22,6 +24,7 @@ func BenchmarkSequential(b *testing.B) {
 	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
 	optionGen := presenter.NewOptionsGen()
 	for _, f := range funcs {
+		time.Sleep(2 * time.Second)
 		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
@@ -56,6 +59,7 @@ func BenchmarkParallel(b *testing.B) {
 	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
 	optionGen := presenter.NewOptionsGen()
 	for _, f := range funcs {
+		time.Sleep(2 * time.Second)
 		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
@@ -97,6 +101,7 @@ var funcs = []struct {
 	{"gqlgen service models", gqlgensm.Candidate{}},
 	{"rest json service models", rest.Candidate{}},
 	{"rest json mapping", restmapping.Candidate{}},
+	{"protobuf mapping", protobuf.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {

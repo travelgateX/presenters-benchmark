@@ -2,8 +2,8 @@ package graphResolver
 
 import (
 	"context"
-	"rfc/presenters/pkg/domainHotelCommon"
-	"rfc/presenters/pkg/search"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/search"
 )
 
 type SearchResolver struct {

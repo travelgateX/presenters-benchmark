@@ -5,8 +5,8 @@ package gqlgensm
 import (
 	"fmt"
 	"io"
-	"rfc/presenters/pkg/common"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/common"
+	"presenters-benchmark/pkg/domainHotelCommon"
 	"strconv"
 )
 

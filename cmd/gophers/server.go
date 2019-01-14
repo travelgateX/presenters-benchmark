@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"rfc/presenters/pkg/domainHotelCommon"
-	"rfc/presenters/pkg/presenter"
-	"rfc/presenters/pkg/presenter/gophers"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter/gophers"
 
 	"github.com/99designs/gqlgen/handler"
 )

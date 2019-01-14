@@ -1,9 +1,12 @@
 package graphResolver
 
 import (
-	domainAccess "hub-aggregator/common/domain/access"
-	"hub-aggregator/common/graphql"
-	"hub-aggregator/common/hotel-common/token/optionId"
+	domainAccess "presenters-benchmark/pkg/access"
+)
+
+const (
+	XoParamPrefix  = "xo_"
+	XodParamPrefix = "xod_"
 )
 
 type AddOnsResolver struct {
@@ -24,24 +27,24 @@ func (a *AddonMap) AddParam(addonType string, p domainAccess.Parameter) {
 	a.addons[addonType][p.Key[len(addonType):]] = p.Value
 }
 
-func (r *AddOnsResolver) Distribute() *graphql.Json {
+func (r *AddOnsResolver) Distribute() *Json {
 	ret := ""
-	if r.addons != nil && r.addons.addons[optionId.XoParamPrefix] != nil && r.addons.addons[optionId.XoParamPrefix]["Breakdown"] != "" {
-		ret = r.addons.addons[optionId.XoParamPrefix]["Breakdown"]
+	if r.addons != nil && r.addons.addons[XoParamPrefix] != nil && r.addons.addons[XoParamPrefix]["Breakdown"] != "" {
+		ret = r.addons.addons[XoParamPrefix]["Breakdown"]
 	}
-	if ret == "" && r.addons != nil && r.addons.addons[optionId.XodParamPrefix] != nil && r.addons.addons[optionId.XodParamPrefix]["Breakdown"] != "" {
-		ret = r.addons.addons[optionId.XodParamPrefix]["Breakdown"]
+	if ret == "" && r.addons != nil && r.addons.addons[XodParamPrefix] != nil && r.addons.addons[XodParamPrefix]["Breakdown"] != "" {
+		ret = r.addons.addons[XodParamPrefix]["Breakdown"]
 	}
 	if ret == "" {
 		return nil
 	}
-	tmp := graphql.Json(ret)
+	tmp := Json(ret)
 	return &tmp
 }
 
 func (r *AddOnsResolver) Distribution() *[]*AddOnResolver {
 	if r.addons != nil {
-		if dic, ok := r.addons.addons[optionId.XodParamPrefix]; ok {
+		if dic, ok := r.addons.addons[XodParamPrefix]; ok {
 			addons := make([]*AddOnResolver, 0, len(dic))
 			for key, value := range dic {
 				addons = append(addons, &AddOnResolver{key: key, value: value})

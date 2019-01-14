@@ -1,8 +1,8 @@
 package graphResolver
 
 import (
-	"rfc/presenters/pkg/access"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/access"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type HotelOptionResolver struct {

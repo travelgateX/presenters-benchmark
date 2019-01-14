@@ -1,16 +1,15 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type PriceResolver struct {
 	Price *domainHotelCommon.Price
 }
 
-func (r *PriceResolver) Currency() graphql.Currency {
-	return graphql.Currency(r.Price.Currency)
+func (r *PriceResolver) Currency() Currency {
+	return Currency(r.Price.Currency)
 }
 
 func (r *PriceResolver) Binding() bool {

@@ -2,10 +2,15 @@ package presenter
 
 import (
 	"encoding/json"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"reflect"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type Option domainHotelCommon.Option
+
+func OptionEquals(opt1, opt2 *Option) bool {
+	return reflect.DeepEqual(opt1, opt2)
+}
 
 type OptionsGen interface {
 	Gen(n int) []*Option

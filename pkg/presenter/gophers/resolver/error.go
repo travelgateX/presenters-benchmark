@@ -1,7 +1,7 @@
 package graphResolver
 
 import (
-	"rfc/presenters/pkg/common"
+	"presenters-benchmark/pkg/common"
 )
 
 type ErrorResolver struct {

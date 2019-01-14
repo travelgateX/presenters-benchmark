@@ -1,8 +1,9 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"fmt"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"strconv"
 )
 
 type CancelPenaltyResolver struct {
@@ -17,10 +18,30 @@ func (r *CancelPenaltyResolver) PenaltyType() domainHotelCommon.CancelPenaltyTyp
 	return (*r.CancelPenalty).Type
 }
 
-func (r *CancelPenaltyResolver) Currency() graphql.Currency {
-	return graphql.Currency((*r.CancelPenalty).Currency)
+func (r *CancelPenaltyResolver) Currency() Currency {
+	return Currency((*r.CancelPenalty).Currency)
 }
 
 func (r *CancelPenaltyResolver) Value() float64 {
 	return r.CancelPenalty.Value
+}
+
+type Currency string
+
+func (_ Currency) ImplementsGraphQLType(name string) bool {
+	return name == "Currency"
+}
+
+func (currency *Currency) UnmarshalGraphQL(input interface{}) error {
+	switch input := input.(type) {
+	case string:
+		*currency = Currency(input)
+		return nil
+	default:
+		return fmt.Errorf("wrong type")
+	}
+}
+
+func (currency Currency) MarshalJSON() ([]byte, error) {
+	return strconv.AppendQuote(nil, string(currency)), nil
 }

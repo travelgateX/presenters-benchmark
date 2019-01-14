@@ -1,0 +1,238 @@
+syntax = "proto3";
+
+
+package search;
+
+import "google/protobuf/empty.proto";
+
+service Searcher {
+    rpc Search(google.protobuf.Empty) returns (SearchReply) {}
+}
+
+message SearchReply {
+    repeated Option options = 1;
+}
+
+message Option {
+    string supplier_code = 1;
+	string access_code = 2;
+	string market = 3;
+	string hotel_code = 4;
+    string hotel_code_supplier = 5;
+	string hotel_name = 6;
+    string board_code = 7;
+    string board_code_supplier = 8;
+	PaymentType paymentType = 9;
+	StatusType statusType = 10;    
+	repeated Occupancy occupancies = 11;
+	repeated Room rooms = 12;   
+	Price price = 13;    
+	repeated Supplement supplements = 14;
+	repeated Surcharge surcharges = 15;
+	repeated RateRuleType rate_rules = 16;
+	CancelPolicy cancel_policy = 17;
+	string remarks = 18;    
+	AddOns add_ons = 19;
+    string token = 20;
+    string id = 21;
+}
+
+enum PaymentType {
+    MERCHANT = 0;
+    DIRECT = 1;
+    CARD_BOOKING = 2;
+    CARD_CHECK_IN = 3;  
+}
+
+enum StatusType {
+    OK = 0;
+    RQ = 1;
+}
+
+enum RateRuleType {
+    PACKAGE = 0;
+    OLDER55 = 1;
+    OLDER60 = 2;
+    OLDER65 = 3;
+    CANARY_RESIDENT = 4;
+    BALEARIC_RESIDENT = 5;
+    LARGE_FAMILY = 6;
+    HONEYMOON = 7;
+    PUBLIC_SERVANT = 8;
+    UNEMPLOYED = 9;
+    NORMAL = 10;
+    NON_REFUNDABLE = 11;
+}
+
+message Occupancy {
+    int32 id = 1;
+    repeated Pax paxes = 2;
+}
+
+message Pax {
+    uint32 age = 1;
+}
+
+message Room {
+    int32 occupancy_ref_id = 1;
+    string code = 2;
+    string description = 3;
+    bool refundable = 4;
+    int64 units = 5;
+    RoomPrice room_price = 6;
+    repeated Bed beds = 7;
+    repeated RatePlan rate_plans = 8;
+    repeated Promotion promotions = 9;
+}
+
+message Bed {
+    string type = 1;
+    string description = 2;
+    int64 count = 3;
+    bool shared = 4;
+}
+
+message RatePlan {
+    string code = 1;
+    string name = 2;
+    string effective_date = 3;
+    string expire_date = 4;
+}
+
+message Promotion {
+    string code = 1;
+    string name = 2;
+    string effective_date = 3;
+    string expire_date = 4;
+}
+
+message Price {
+    string currency = 1;
+    bool binding = 2;
+    double net = 3;
+    double gross = 4;
+    Exchange exchange = 5;
+    repeated Markup markups = 6;
+}
+
+message Exchange {
+    string currency = 1;
+    double rate = 2;
+}
+
+message Markup {
+    string currency = 1;
+    bool binding = 2;
+    double net = 3;
+    double gross = 4;
+    Exchange exchange = 5;
+    string channel = 6;
+    repeated Rule rules = 7;
+}
+
+message Rule {
+    string id = 1;
+    string name = 2;
+    enum MarkupRuleType {
+        PERCENT = 0;
+        IMPORT = 1;
+    }
+    MarkupRuleType type = 3;
+    double value = 4;
+}
+
+
+
+message RoomPrice {
+    Price price = 1;
+    repeated Breakdown breakdowns = 2;
+}
+
+message Breakdown {
+    string effective_date = 1;
+    string expire_date = 2;
+    Price price = 3;
+}
+
+message Supplement {
+    string code = 1;
+    string name = 2;
+    string description = 3;
+    ChargeType charge_type = 4;
+    bool mandatory = 5;
+    DurationType duration_type = 6;
+    int64 quantity = 7;
+    UnitTimeType unit_time_type = 8;
+    string effective_date = 9;
+    string expire_date = 10;
+    Resort resort = 11;
+    Price price = 12;
+    SupplementType supplement_type = 13;
+}
+
+enum SupplementType {
+    SKI_PASS = 0;
+    LESSONS = 1;
+    MEALS = 2;
+    EQUIPMENT = 3;
+    TICKET = 4;
+    TRANSFERS = 5;
+    GALA = 6;
+    ACTIVITY = 7;
+}
+
+enum ChargeType {
+    INCLUDE = 0;
+    EXCLUDE = 1;
+}
+
+enum DurationType {
+    RANGE = 0;
+    OPEN = 1;
+}
+
+enum UnitTimeType {
+    DAY = 0;
+    HOUR = 1;
+}
+
+message Resort {
+    string code = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message Surcharge {
+    ChargeType charge_type = 1;
+    bool mandatory = 2;
+    Price price = 3;
+    string description = 4;
+}
+
+message CancelPolicy {
+    bool refundable = 1;
+    repeated CancelPenalty cancel_penalties = 2;
+}
+
+message CancelPenalty {
+    int64 hours_before = 1;
+    CancelPenaltyType penalty_type = 2;
+    string currency = 3;
+    double value = 4;
+}
+
+enum CancelPenaltyType {
+    NIGHTS = 0;
+    PERCENT = 1;
+    IMPORT = 2;
+}
+
+message AddOns {
+    repeated AddOn distribution = 1;
+    string distribute = 2;
+}
+
+message AddOn {
+    string key = 1;
+    string value = 2;
+}

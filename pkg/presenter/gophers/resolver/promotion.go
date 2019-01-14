@@ -1,8 +1,7 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type PromotionResolver struct {
@@ -17,18 +16,18 @@ func (r *PromotionResolver) Name() *string {
 	return (*r.Promotion).Name
 }
 
-func (r *PromotionResolver) EffectiveDate() *graphql.Date {
+func (r *PromotionResolver) EffectiveDate() *Date {
 	if r.Promotion.EffectiveDate == nil {
 		return nil
 	}
-	tmp := graphql.Date(*r.Promotion.EffectiveDate)
+	tmp := Date(*r.Promotion.EffectiveDate)
 	return &tmp
 }
 
-func (r *PromotionResolver) ExpireDate() *graphql.Date {
+func (r *PromotionResolver) ExpireDate() *Date {
 	if r.Promotion.ExpireDate == nil {
 		return nil
 	}
-	tmp := graphql.Date(*r.Promotion.ExpireDate)
+	tmp := Date(*r.Promotion.ExpireDate)
 	return &tmp
 }

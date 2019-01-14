@@ -3,9 +3,9 @@ package graphResolver
 import (
 	"context"
 
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 
-	"rfc/presenters/pkg/search"
+	"presenters-benchmark/pkg/search"
 )
 
 type HotelXQueryResolver struct {

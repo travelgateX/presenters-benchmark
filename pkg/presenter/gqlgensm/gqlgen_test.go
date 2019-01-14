@@ -1,7 +1,7 @@
 package gqlgensm
 
 import (
-	"rfc/presenters/pkg/presenter"
+	"presenters-benchmark/pkg/presenter"
 	"testing"
 )
 

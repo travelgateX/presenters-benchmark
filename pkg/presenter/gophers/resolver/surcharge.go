@@ -1,7 +1,7 @@
 package graphResolver
 
 import (
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type SurchargeResolver struct {

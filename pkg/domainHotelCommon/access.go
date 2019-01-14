@@ -1,6 +1,6 @@
 package domainHotelCommon
 
-import "rfc/presenters/pkg/access"
+import "presenters-benchmark/pkg/access"
 
 type Access struct {
 	AccessId      string

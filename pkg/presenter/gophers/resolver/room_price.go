@@ -1,6 +1,6 @@
 package graphResolver
 
-import "rfc/presenters/pkg/domainHotelCommon"
+import "presenters-benchmark/pkg/domainHotelCommon"
 
 type RoomPriceResolver struct {
 	RoomPrice *domainHotelCommon.RoomPrice

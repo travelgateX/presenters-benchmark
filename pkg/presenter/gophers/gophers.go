@@ -2,47 +2,21 @@ package gophers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"github.com/graph-gophers/graphql-go"
-	hagraphql "hub-aggregator/common/graphql"
-	"hub-aggregator/common/kit/routing"
-	"hub-aggregator/common/stats"
+	"github.com/travelgateX/go-io/log"
 	"net/http"
-	"rfc/presenters/pkg/domainHotelCommon"
-	"rfc/presenters/pkg/presenter"
-	"rfc/presenters/pkg/presenter/gophers/resolver"
+	"presenters-benchmark/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter/gophers/resolver"
+	"runtime"
 	"strconv"
 )
 
 type Candidate struct{}
 
-var _ presenter.CandidateServer = (*Candidate)(nil)
 var _ presenter.CandidateHandlerFunc = (*Candidate)(nil)
-
-func (Candidate) NewServer(addr, pattern string, options []*presenter.Option, results chan<- presenter.OperationResult) (*routing.Server, error) {
-	soptions := make([]*domainHotelCommon.Option, len(options))
-	for i, o := range options {
-		opt := (domainHotelCommon.Option)(*o)
-		soptions[i] = &opt
-	}
-
-	schema, err := graphql.ParseSchema(
-		schema,
-		&graphResolver.QueryResolver{soptions},
-		&graphResolver.MutationResolver{},
-		graphql.Logger(hagraphql.Logger{}),
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return presenter.NewGzipCandidateServer(
-		addr,
-		pattern,
-		HandlerFunc(schema, results),
-	), nil
-}
 
 func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
 	soptions := make([]*domainHotelCommon.Option, len(options))
@@ -55,7 +29,7 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 		schema,
 		&graphResolver.QueryResolver{soptions},
 		&graphResolver.MutationResolver{},
-		graphql.Logger(hagraphql.Logger{}),
+		graphql.Logger(Logger{}),
 	)
 
 	if err != nil {
@@ -96,45 +70,19 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 	}, nil
 }
 
-func HandlerFunc(schema *graphql.Schema, results chan<- presenter.OperationResult) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		times := presenter.OperationResult{}
-		totalInit := stats.UtcNow()
-		var params struct {
-			Query         string                 `json:"query"`
-			OperationName string                 `json:"operationName"`
-			Variables     map[string]interface{} `json:"variables"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
+	return presenter.JSONUnmarshalOptions(b)
+}
 
-		response := schema.Exec(r.Context(), params.Query, params.OperationName, params.Variables)
-		// schema exec errors
-		if len(response.Errors) > 0 {
-			buf := bytes.Buffer{}
-			for i, qErr := range response.Errors {
-				if i > 0 {
-					buf.WriteString("\n")
-				}
-				buf.WriteString("[" + strconv.Itoa(i) + "]: " + qErr.Error())
-			}
-			errStr := "schema exec errors:\n " + buf.String()
-			http.Error(w, errStr, http.StatusBadRequest)
-			return
-		}
+// Logger replaces NeeLance defaultLogger which prints panics to standard output
+type Logger struct{}
 
-		SerializeInit := stats.UtcNow()
-		err := json.NewEncoder(w).Encode(response)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		times.SerializeTime = stats.NewTimes(SerializeInit)
-		times.TotalTime = stats.NewTimes(totalInit)
-		results <- times
-		return
-	}
+// LogPanic logs an schema error as an info
+func (l Logger) LogPanic(_ context.Context, value interface{}) {
+	const size = 64 << 10
+	buf := make([]byte, size)
+	buf = buf[:runtime.Stack(buf, false)]
+	log.Infof("graphql: panic occurred: %v\n%s", value, buf)
 }
 
 var schema = `schema {

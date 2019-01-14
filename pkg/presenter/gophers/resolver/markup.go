@@ -1,8 +1,7 @@
 package graphResolver
 
 import (
-	"hub-aggregator/common/graphql"
-	"rfc/presenters/pkg/domainHotelCommon"
+	"presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type MarkupResolver struct {
@@ -13,8 +12,8 @@ func (r *MarkupResolver) Channel() *string {
 	return r.Markup.Channel
 }
 
-func (r *MarkupResolver) Currency() graphql.Currency {
-	return graphql.Currency(r.Markup.Currency)
+func (r *MarkupResolver) Currency() Currency {
+	return Currency(r.Markup.Currency)
 }
 
 func (r *MarkupResolver) Binding() bool {

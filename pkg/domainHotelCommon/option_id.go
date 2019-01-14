@@ -1,7 +1,7 @@
 package domainHotelCommon
 
 import (
-	"rfc/presenters/pkg/access"
+	"presenters-benchmark/pkg/access"
 )
 
 type OptionID struct {
