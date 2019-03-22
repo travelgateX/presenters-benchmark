@@ -8,9 +8,10 @@ import (
 	"presenters-benchmark/pkg/presenter"
 	"presenters-benchmark/pkg/presenter/gophers"
 	"presenters-benchmark/pkg/presenter/gqlgen"
-	gqlgensm "presenters-benchmark/pkg/presenter/gqlgensm"
+	"presenters-benchmark/pkg/presenter/gqlgensm"
 	"presenters-benchmark/pkg/presenter/protobuf"
 	"presenters-benchmark/pkg/presenter/rest"
+	"presenters-benchmark/pkg/presenter/resteasyjson"
 	"presenters-benchmark/pkg/presenter/restmapping"
 	"testing"
 	"time"
@@ -102,6 +103,7 @@ var funcs = []struct {
 	{"rest json service models", rest.Candidate{}},
 	{"rest json mapping", restmapping.Candidate{}},
 	{"protobuf mapping", protobuf.Candidate{}},
+	{"rest easyJson mapping", resteasyjson.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {
