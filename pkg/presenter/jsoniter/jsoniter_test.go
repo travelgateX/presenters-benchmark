@@ -1,4 +1,4 @@
-package ffjson
+package jsoniter
 
 import (
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
