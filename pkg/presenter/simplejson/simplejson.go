@@ -1,9 +1,9 @@
-package rest_simplejson
+package simplejson
 
 import (
-	"io/ioutil"
+	"encoding/json"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"net/http"
-	"presenters-benchmark/pkg/presenter"
 
 	simplejson "github.com/likexian/simplejson-go"
 )
@@ -14,24 +14,24 @@ var _ presenter.CandidateHandlerFunc = (*Candidate)(nil)
 
 func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		bodyBytes, err := ioutil.ReadAll(r.Body)
-		bodyString := string(bodyBytes)
+		var params struct {
+			Query         string                 `json:"query"`
+			OperationName string                 `json:"operationName"`
+			Variables     map[string]interface{} `json:"variables"`
+		}
 
-		//part: deserialize
-		if _, err := simplejson.Loads(bodyString); err != nil {
+		// mandatory to check this in all example
+		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		//part serialize
 		jsonObject := simplejson.New(options)
-		if nil == jsonObject {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+
 		w.Write(prefix)
 		jsonObjectSerialized, err := jsonObject.Dumps()
-		if nil != err {
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

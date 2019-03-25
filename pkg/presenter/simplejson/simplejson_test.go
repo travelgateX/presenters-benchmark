@@ -1,7 +1,7 @@
-package rest_simplejson
+package simplejson
 
 import (
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"testing"
 )
 
