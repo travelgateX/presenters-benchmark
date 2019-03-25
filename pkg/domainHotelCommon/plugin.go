@@ -3,7 +3,7 @@ package domainHotelCommon
 import (
 	"fmt"
 	"io"
-	"presenters-benchmark/pkg/access"
+	"github.com/travelgateX/presenters-benchmark/pkg/access"
 	"strconv"
 )
 
@@ -98,6 +98,7 @@ func (e *PluginType) UnmarshalGQL(v interface{}) error {
 func (e PluginType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
 
 type FilterPluginType struct {
 	Includes *[]FilterPlugin

@@ -1,7 +1,7 @@
 package restmapping
 
 import (
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"testing"
 )
 

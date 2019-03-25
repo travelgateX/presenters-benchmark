@@ -1,7 +1,7 @@
 package graphResolver
 
 import (
-	domainAccess "presenters-benchmark/pkg/access"
+	domainAccess "github.com/travelgateX/presenters-benchmark/pkg/access"
 )
 
 const (

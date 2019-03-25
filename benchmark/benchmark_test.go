@@ -5,17 +5,21 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"presenters-benchmark/pkg/presenter"
-	"presenters-benchmark/pkg/presenter/gophers"
-	"presenters-benchmark/pkg/presenter/gqlgen"
-	"presenters-benchmark/pkg/presenter/gqlgensm"
-	"presenters-benchmark/pkg/presenter/rest"
-	"presenters-benchmark/pkg/presenter/restmapping"
+
 	"testing"
 	"time"
+  
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgen"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/rest"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/restmapping"
+  "github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
+  
 	"presenters-benchmark/pkg/presenter/jsoniter"
 	"presenters-benchmark/pkg/presenter/jsonitermapping"
-	"presenters-benchmark/pkg/presenter/protobuf"
 )
 
 // Variables:
@@ -100,11 +104,13 @@ var funcs = []struct {
 }{
 	{"gophers", gophers.Candidate{}},
 	{"gqlgen mapping", gqlgen.Candidate{}},
-	{"gqlgen service models", gqlgensm.Candidate{}},
-	{"rest json service models", rest.Candidate{}},
-	{"rest json mapping", restmapping.Candidate{}},
+	//{"gqlgen service models", gqlgensm.Candidate{}},
 	{"protobuf mapping", protobuf.Candidate{}},
-	{"rest jsoniter", jsoniter.Candidate{}},
+	{"std json", rest.Candidate{}},
+	{"std json mapping", restmapping.Candidate{}},
+	{"ffjson mapping", ffjson.Candidate{}},
+  {"simplejson", simplejson.Candidate{}},
+ 	{"rest jsoniter", jsoniter.Candidate{}},
 	{"rest jsoniter mapping", jsonitermapping.Candidate{}},
 }
 
@@ -154,7 +160,8 @@ type candidateBenchmark struct {
 
 // HIGH
 
-func BenchmarkCandidate_gqlgen_1_high(b *testing.B) {
+
+/*func BenchmarkCandidate_gqlgen_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgen.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -170,7 +177,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_1_high(b *testing.B) {
 		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
-}
+}*/
 
 func BenchmarkCandidate_gophers_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -217,23 +224,34 @@ func BenchmarkCandidate_jsoniter_servicemodels_1_high(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_2000_high(b *testing.B) {
+
+func BenchmarkCandidate_ffjson_servicemodels_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
+		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
+		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_2000_high(b *testing.B) {
+//func BenchmarkCandidate_gqlgen_2000_high(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 2000,
+//		ResolveScale: presenter.ResolveScaleHigh,
+//	})
+//}
+
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 2000,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
-}
+}*/
 
 func BenchmarkCandidate_gophers_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -278,16 +296,26 @@ func BenchmarkCandidate_jsoniter_servicemodels_2000_high(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_7000_high(b *testing.B) {
+func BenchmarkCandidate_ffjson_servicemodels_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
+		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
+		OptionNumber: 2000,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_7000_high(b *testing.B) {
+//func BenchmarkCandidate_gqlgen_7000_high(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 7000,
+//		ResolveScale: presenter.ResolveScaleHigh,
+//	})
+//}
+
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -295,6 +323,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_7000_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+*/
 
 func BenchmarkCandidate_gophers_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -321,18 +350,10 @@ func BenchmarkCandidate_rest_servicemodels_7000_high(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_jsoniter_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsoniter.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
 
-func BenchmarkCandidate_jsoniter_servicemodels_7000_high(b *testing.B) {
+func BenchmarkCandidate_ffjson_servicemodels_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsonitermapping.Candidate{},
+		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -348,14 +369,14 @@ func BenchmarkCandidate_gqlgen_20000_high(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_20000_high(b *testing.B) {
+/*func BenchmarkCandidate_gqlgen_servicemodels_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 20000,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
-}
+}*/
 
 func BenchmarkCandidate_gophers_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -400,16 +421,26 @@ func BenchmarkCandidate_jsoniter_servicemodels_20000_high(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_65536_high(b *testing.B) {
+func BenchmarkCandidate_ffjson_servicemodels_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
+		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
+		OptionNumber: 20000,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_65536_high(b *testing.B) {
+//func BenchmarkCandidate_gqlgen_65536_high(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 65536,
+//		ResolveScale: presenter.ResolveScaleHigh,
+//	})
+//}
+
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -417,6 +448,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_65536_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+*/
 
 func BenchmarkCandidate_gophers_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -443,6 +475,14 @@ func BenchmarkCandidate_rest_servicemodels_65536_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+func BenchmarkCandidate_ffjson_servicemodels_65536_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    ffjson.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 65536,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
 
 func BenchmarkCandidate_jsoniter_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -462,7 +502,6 @@ func BenchmarkCandidate_jsoniter_servicemodels_65536_high(b *testing.B) {
 }
 
 // Medium
-
 func BenchmarkCandidate_gqlgen_1_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgen.Candidate{},
@@ -472,7 +511,7 @@ func BenchmarkCandidate_gqlgen_1_medium(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_1_medium(b *testing.B) {
+/*func BenchmarkCandidate_gqlgen_servicemodels_1_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -480,6 +519,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_1_medium(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleMedium,
 	})
 }
+*/
 
 func BenchmarkCandidate_gophers_1_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -490,23 +530,25 @@ func BenchmarkCandidate_gophers_1_medium(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_7000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
+//func BenchmarkCandidate_gqlgen_7000_medium(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 7000,
+//		ResolveScale: presenter.ResolveScaleMedium,
+//	})
+//}
 
-func BenchmarkCandidate_gqlgen_servicemodels_7000_medium(b *testing.B) {
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_7000_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleMedium,
 	})
-}
+}*/
+
 
 func BenchmarkCandidate_gophers_7000_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -517,16 +559,17 @@ func BenchmarkCandidate_gophers_7000_medium(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_20000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
+//func BenchmarkCandidate_gqlgen_20000_medium(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 20000,
+//		ResolveScale: presenter.ResolveScaleMedium,
+//	})
+//}
 
-func BenchmarkCandidate_gqlgen_servicemodels_20000_medium(b *testing.B) {
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_20000_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -534,6 +577,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_20000_medium(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleMedium,
 	})
 }
+*/
 
 func BenchmarkCandidate_gophers_20000_medium(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -545,7 +589,6 @@ func BenchmarkCandidate_gophers_20000_medium(b *testing.B) {
 }
 
 // Low
-
 func BenchmarkCandidate_gqlgen_1_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgen.Candidate{},
@@ -555,14 +598,15 @@ func BenchmarkCandidate_gqlgen_1_low(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_1_low(b *testing.B) {
+/*func BenchmarkCandidate_gqlgen_servicemodels_1_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleLow,
 	})
-}
+}*/
+
 
 func BenchmarkCandidate_gophers_1_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -573,16 +617,17 @@ func BenchmarkCandidate_gophers_1_low(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_7000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
+//func BenchmarkCandidate_gqlgen_7000_low(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 7000,
+//		ResolveScale: presenter.ResolveScaleLow,
+//	})
+//}
 
-func BenchmarkCandidate_gqlgen_servicemodels_7000_low(b *testing.B) {
+
+/*func BenchmarkCandidate_gqlgen_servicemodels_7000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -590,6 +635,7 @@ func BenchmarkCandidate_gqlgen_servicemodels_7000_low(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleLow,
 	})
 }
+*/
 
 func BenchmarkCandidate_gophers_7000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
@@ -609,32 +655,32 @@ func BenchmarkCandidate_rest_servicemodels_7000_low(b *testing.B) {
 	})
 }
 
-func BenchmarkCandidate_jsoniter_servicemodels_7000_low(b *testing.B) {
+func BenchmarkCandidate_ffjson_servicemodels_7000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsonitermapping.Candidate{},
+		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleLow,
 	})
 }
 
-func BenchmarkCandidate_gqlgen_20000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
+//func BenchmarkCandidate_gqlgen_20000_low(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgen.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 20000,
+//		ResolveScale: presenter.ResolveScaleLow,
+//	})
+//}
 
-func BenchmarkCandidate_gqlgen_servicemodels_20000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
+//func BenchmarkCandidate_gqlgen_servicemodels_20000_low(b *testing.B) {
+//	benchmarkCandidates(b, candidateBenchmark{
+//		Candidate:    gqlgensm.Candidate{},
+//		HTTPStatus:   http.StatusOK,
+//		OptionNumber: 20000,
+//		ResolveScale: presenter.ResolveScaleLow,
+//	})
+//}
 
 func BenchmarkCandidate_gophers_20000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{

@@ -1,4 +1,4 @@
-package restmapping
+package ffjson
 
 import (
 	"github.com/travelgateX/presenters-benchmark/pkg/access"
@@ -6,6 +6,7 @@ import (
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
+// ffjson: skip
 type Response struct {
 	Data struct {
 		HotelX struct {

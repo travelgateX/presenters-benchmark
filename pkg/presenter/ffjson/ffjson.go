@@ -1,9 +1,10 @@
-package restmapping
+package ffjson
 
 import (
 	"encoding/json"
-	"net/http"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"net/http"
 )
 
 type Candidate struct{}
@@ -17,13 +18,15 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 			OperationName string                 `json:"operationName"`
 			Variables     map[string]interface{} `json:"variables"`
 		}
-		// mandatory to check this in all example
+
 		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		// deserialize and return option
-		err := json.NewEncoder(w).Encode(NewResponse(options))
+		response := NewResponse(options)
+
+		err := ffjson.NewEncoder(w).Encode(response)
+
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

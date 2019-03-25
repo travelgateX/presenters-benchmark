@@ -2,7 +2,7 @@ package graphResolver
 
 import (
 	"fmt"
-	"presenters-benchmark/pkg/search"
+	"github.com/travelgateX/presenters-benchmark/pkg/search"
 	"strconv"
 	"strings"
 )

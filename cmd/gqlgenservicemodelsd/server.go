@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"presenters-benchmark/pkg/domainHotelCommon"
-	"presenters-benchmark/pkg/presenter"
-	"presenters-benchmark/pkg/presenter/gqlgensm"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgensm"
 
 	"github.com/99designs/gqlgen/handler"
 )

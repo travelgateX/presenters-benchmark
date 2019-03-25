@@ -1,7 +1,7 @@
-package gophers
+package rest_simplejson
 
 import (
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter"
 	"testing"
 )
 
