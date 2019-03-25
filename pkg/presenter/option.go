@@ -2,9 +2,25 @@ package presenter
 
 import (
 	"encoding/json"
-	"reflect"
 	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"reflect"
 )
+
+// easyjson:json
+type Response struct {
+	Data struct {
+		HotelX struct {
+			Search struct {
+				Options []*Option `json:"options"`
+				Errors  struct {
+					Code        string `json:"code"`
+					Type        string `json:"type"`
+					Description string `json:"description"`
+				} `json:"errors"`
+			} `json:"search"`
+		} `json:"hotelX"`
+	} `json:"data"`
+}
 
 type Option domainHotelCommon.Option
 

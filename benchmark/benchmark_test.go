@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
@@ -109,6 +110,7 @@ var funcs = []struct {
 	{"ffjson mapping", ffjson.Candidate{}},
 	{"simplejson", simplejson.Candidate{}},
 	{"jsoniter", jsoniter.Candidate{}},
+	{"easyjson", easyjson.Candidate{}},
 	{"easyjson mapping", easyjsonmapping.Candidate{}},
 }
 
