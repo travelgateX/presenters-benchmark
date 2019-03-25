@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-
 	"testing"
 	"time"
 
@@ -18,6 +17,7 @@ import (
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/rest"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/restmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
+  "github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
 )
 
 // Variables:
@@ -108,7 +108,8 @@ var funcs = []struct {
 	{"std json mapping", restmapping.Candidate{}},
 	{"ffjson mapping", ffjson.Candidate{}},
 	{"simplejson", simplejson.Candidate{}},
-	{"rest jsoniter", jsoniter.Candidate{}},
+	{"jsoniter", jsoniter.Candidate{}},
+	{"easyjson", easyjson.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {
