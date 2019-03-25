@@ -3,9 +3,9 @@ package graphResolver
 import (
 	"context"
 
-	"presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 
-	"presenters-benchmark/pkg/search"
+	"github.com/travelgateX/presenters-benchmark/pkg/search"
 )
 
 type HotelXQueryResolver struct {

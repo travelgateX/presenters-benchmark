@@ -2,8 +2,8 @@ package graphResolver
 
 import (
 	"context"
-	"presenters-benchmark/pkg/common"
-	"presenters-benchmark/pkg/search"
+	"github.com/travelgateX/presenters-benchmark/pkg/common"
+	"github.com/travelgateX/presenters-benchmark/pkg/search"
 )
 
 type HotelSearchResolver struct {

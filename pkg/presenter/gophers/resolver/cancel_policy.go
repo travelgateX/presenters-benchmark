@@ -1,6 +1,6 @@
 package graphResolver
 
-import "presenters-benchmark/pkg/domainHotelCommon"
+import "github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 
 type CancelPolicyResolver struct {
 	CancelPolicy *domainHotelCommon.CancelPolicy

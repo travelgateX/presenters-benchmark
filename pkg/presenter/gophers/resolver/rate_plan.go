@@ -1,7 +1,7 @@
 package graphResolver
 
 import (
-	"presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type RatePlanResolver struct {

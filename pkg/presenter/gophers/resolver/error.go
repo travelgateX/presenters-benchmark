@@ -1,7 +1,7 @@
 package graphResolver
 
 import (
-	"presenters-benchmark/pkg/common"
+	"github.com/travelgateX/presenters-benchmark/pkg/common"
 )
 
 type ErrorResolver struct {

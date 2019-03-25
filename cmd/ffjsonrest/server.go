@@ -1,13 +1,12 @@
-package main
+package ffjsonrest
 
 import (
+	"github.com/99designs/gqlgen/handler"
 	"log"
 	"net/http"
 	"os"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/restmapping"
-
-	"github.com/99designs/gqlgen/handler"
+	"presenters-benchmark/pkg/presenter"
+	"presenters-benchmark/pkg/presenter/ffjsonrest"
 )
 
 const defaultPort = "8080"
@@ -19,7 +18,7 @@ func main() {
 	}
 
 	options := presenter.NewOptionsGen().Gen(1)
-	h, err := restmapping.Candidate{}.HandlerFunc(options)
+	h, err := ffjsonrest.Candidate{}.HandlerFunc(options)
 	if err != nil {
 		panic(err)
 	}
