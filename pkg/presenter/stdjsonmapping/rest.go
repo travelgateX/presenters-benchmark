@@ -1,9 +1,9 @@
-package restmapping
+package stdjsonmapping
 
 import (
 	"encoding/json"
-	"net/http"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"net/http"
 )
 
 type Candidate struct{}

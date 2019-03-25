@@ -1,4 +1,4 @@
-package restmapping
+package stdjsonmapping
 
 import (
 	"github.com/travelgateX/presenters-benchmark/pkg/access"

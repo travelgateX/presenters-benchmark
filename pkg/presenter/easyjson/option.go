@@ -1,9 +1,9 @@
-package resteasyjson
+package easyjson
 
 import (
-	"presenters-benchmark/pkg/access"
-	"presenters-benchmark/pkg/domainHotelCommon"
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/access"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
 //easyjson:json

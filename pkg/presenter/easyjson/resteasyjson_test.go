@@ -1,4 +1,4 @@
-package rest
+package easyjson
 
 import (
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"

@@ -9,15 +9,15 @@ import (
 	"time"
 
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgen"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/jsoniter"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/rest"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/restmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
-  "github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjson"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjsonmapping"
 )
 
 // Variables:
@@ -29,7 +29,7 @@ func BenchmarkSequential(b *testing.B) {
 	optionGen := presenter.NewOptionsGen()
 	for _, f := range funcs {
 		time.Sleep(2 * time.Second)
-		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
+		for optNumber := 1; optNumber <= 1; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
 				b.Fatalf("Error creating Handler: %v", err)
@@ -104,8 +104,8 @@ var funcs = []struct {
 	{"gqlgen mapping", gqlgen.Candidate{}},
 	//{"gqlgen service models", gqlgensm.Candidate{}},
 	{"protobuf mapping", protobuf.Candidate{}},
-	{"std json", rest.Candidate{}},
-	{"std json mapping", restmapping.Candidate{}},
+	{"std json", stdjson.Candidate{}},
+	{"std json mapping", stdjsonmapping.Candidate{}},
 	{"ffjson mapping", ffjson.Candidate{}},
 	{"simplejson", simplejson.Candidate{}},
 	{"jsoniter", jsoniter.Candidate{}},
@@ -187,7 +187,7 @@ func BenchmarkCandidate_gophers_1_high(b *testing.B) {
 
 func BenchmarkCandidate_rest_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    rest.Candidate{},
+		Candidate:    stdjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -196,7 +196,7 @@ func BenchmarkCandidate_rest_1_high(b *testing.B) {
 
 func BenchmarkCandidate_rest_servicemodels_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -250,7 +250,7 @@ func BenchmarkCandidate_gophers_2000_high(b *testing.B) {
 
 func BenchmarkCandidate_rest_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    rest.Candidate{},
+		Candidate:    stdjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 2000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -258,7 +258,7 @@ func BenchmarkCandidate_rest_2000_high(b *testing.B) {
 }
 func BenchmarkCandidate_rest_servicemodels_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 2000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -312,7 +312,7 @@ func BenchmarkCandidate_gophers_7000_high(b *testing.B) {
 }
 func BenchmarkCandidate_rest_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    rest.Candidate{},
+		Candidate:    stdjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -320,7 +320,7 @@ func BenchmarkCandidate_rest_7000_high(b *testing.B) {
 }
 func BenchmarkCandidate_rest_servicemodels_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -365,7 +365,7 @@ func BenchmarkCandidate_gophers_20000_high(b *testing.B) {
 
 func BenchmarkCandidate_rest_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    rest.Candidate{},
+		Candidate:    stdjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 20000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -373,7 +373,7 @@ func BenchmarkCandidate_rest_20000_high(b *testing.B) {
 }
 func BenchmarkCandidate_rest_servicemodels_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 20000,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -428,7 +428,7 @@ func BenchmarkCandidate_gophers_65536_high(b *testing.B) {
 
 func BenchmarkCandidate_rest_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    rest.Candidate{},
+		Candidate:    stdjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 65536,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -436,7 +436,7 @@ func BenchmarkCandidate_rest_65536_high(b *testing.B) {
 }
 func BenchmarkCandidate_rest_servicemodels_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 65536,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -602,7 +602,7 @@ func BenchmarkCandidate_gophers_7000_low(b *testing.B) {
 
 func BenchmarkCandidate_rest_servicemodels_7000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    restmapping.Candidate{},
+		Candidate:    stdjsonmapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 7000,
 		ResolveScale: presenter.ResolveScaleLow,

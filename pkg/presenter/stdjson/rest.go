@@ -1,10 +1,9 @@
-package resteasyjson
+package stdjson
 
 import (
 	"encoding/json"
-	"github.com/mailru/easyjson/jwriter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"net/http"
-	"presenters-benchmark/pkg/presenter"
 )
 
 type Candidate struct{}
@@ -18,6 +17,7 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 			OperationName string                 `json:"operationName"`
 			Variables     map[string]interface{} `json:"variables"`
 		}
+
 		// mandatory to check this in all example
 		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -25,22 +25,18 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 		}
 
 		// deserialize and return option
-		// TODO aplicar la libreria EasyJson
-		jw := jwriter.Writer{NoEscapeHTML:true}
-		response := NewResponse(options)
-		response.MarshalEasyJSON(&jw)
-		if jw.Error != nil {
-			http.Error(w, jw.Error.Error(), http.StatusInternalServerError)
-		}
-
-		_, err := jw.DumpTo(w)
+		w.Write(prefix)
+		err := json.NewEncoder(w).Encode(options)
+		w.Write(sufix)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		return
 	}, nil
 }
 
 func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
 	return presenter.JSONUnmarshalOptions(b)
 }
+
+var prefix = []byte(`{"data": {"hotelX": {"search": {"options": `)
+var sufix = []byte(`,"errors": {"code": "","type": "","description": ""}}}}}`)
