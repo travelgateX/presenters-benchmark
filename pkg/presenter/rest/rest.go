@@ -2,8 +2,8 @@ package rest
 
 import (
 	"encoding/json"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"net/http"
-	"presenters-benchmark/pkg/presenter"
 )
 
 type Candidate struct{}
@@ -18,7 +18,6 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 			Variables     map[string]interface{} `json:"variables"`
 		}
 		// mandatory to check this in all example
-
 		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

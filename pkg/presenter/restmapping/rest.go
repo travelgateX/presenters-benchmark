@@ -3,7 +3,7 @@ package restmapping
 import (
 	"encoding/json"
 	"net/http"
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
 type Candidate struct{}

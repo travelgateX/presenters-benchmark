@@ -1,8 +1,8 @@
 package search
 
 import (
-	"presenters-benchmark/pkg/access"
-	"presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/access"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type HotelSearchRQ struct {

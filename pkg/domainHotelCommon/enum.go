@@ -3,7 +3,7 @@ package domainHotelCommon
 import (
 	"fmt"
 	"io"
-	"presenters-benchmark/pkg/access"
+	"github.com/travelgateX/presenters-benchmark/pkg/access"
 	"strconv"
 )
 

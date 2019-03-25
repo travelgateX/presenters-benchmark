@@ -8,6 +8,18 @@ import (
 	"strconv"
 )
 
+type BookableOptionSearch interface {
+	IsBookableOptionSearch()
+}
+
+type Priceable interface {
+	IsPriceable()
+}
+
+type Response interface {
+	IsResponse()
+}
+
 type AccessFilterInput struct {
 	Includes []string `json:"includes"`
 	Excludes []string `json:"excludes"`
@@ -34,10 +46,6 @@ type Bed struct {
 	Description *string `json:"description"`
 	Count       *int    `json:"count"`
 	Shared      *bool   `json:"shared"`
-}
-
-type BookableOptionSearch interface {
-	IsBookableOptionSearch()
 }
 
 type BusinessRulesInput struct {
@@ -250,10 +258,6 @@ type PriceBreakdown struct {
 	Price         Price  `json:"price"`
 }
 
-type Priceable interface {
-	IsPriceable()
-}
-
 type Promotion struct {
 	Code          string  `json:"code"`
 	Name          *string `json:"name"`
@@ -277,10 +281,6 @@ type Resort struct {
 	Code        string  `json:"code"`
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
-}
-
-type Response interface {
-	IsResponse()
 }
 
 type Room struct {
@@ -429,6 +429,11 @@ const (
 	BusinessRulesTypeRoomType      BusinessRulesType = "ROOM_TYPE"
 )
 
+var AllBusinessRulesType = []BusinessRulesType{
+	BusinessRulesTypeCheaperAmount,
+	BusinessRulesTypeRoomType,
+}
+
 func (e BusinessRulesType) IsValid() bool {
 	switch e {
 	case BusinessRulesTypeCheaperAmount, BusinessRulesTypeRoomType:
@@ -466,6 +471,12 @@ const (
 	CancelPenaltyTypeImport  CancelPenaltyType = "IMPORT"
 )
 
+var AllCancelPenaltyType = []CancelPenaltyType{
+	CancelPenaltyTypeNights,
+	CancelPenaltyTypePercent,
+	CancelPenaltyTypeImport,
+}
+
 func (e CancelPenaltyType) IsValid() bool {
 	switch e {
 	case CancelPenaltyTypeNights, CancelPenaltyTypePercent, CancelPenaltyTypeImport:
@@ -501,6 +512,11 @@ const (
 	ChargeTypeInclude ChargeType = "INCLUDE"
 	ChargeTypeExclude ChargeType = "EXCLUDE"
 )
+
+var AllChargeType = []ChargeType{
+	ChargeTypeInclude,
+	ChargeTypeExclude,
+}
 
 func (e ChargeType) IsValid() bool {
 	switch e {
@@ -538,6 +554,11 @@ const (
 	DurationTypeOpen  DurationType = "OPEN"
 )
 
+var AllDurationType = []DurationType{
+	DurationTypeRange,
+	DurationTypeOpen,
+}
+
 func (e DurationType) IsValid() bool {
 	switch e {
 	case DurationTypeRange, DurationTypeOpen:
@@ -573,6 +594,11 @@ const (
 	MarkupRuleTypePercent MarkupRuleType = "PERCENT"
 	MarkupRuleTypeImport  MarkupRuleType = "IMPORT"
 )
+
+var AllMarkupRuleType = []MarkupRuleType{
+	MarkupRuleTypePercent,
+	MarkupRuleTypeImport,
+}
 
 func (e MarkupRuleType) IsValid() bool {
 	switch e {
@@ -612,6 +638,13 @@ const (
 	PaymentTypeCardCheckIn PaymentType = "CARD_CHECK_IN"
 )
 
+var AllPaymentType = []PaymentType{
+	PaymentTypeMerchant,
+	PaymentTypeDirect,
+	PaymentTypeCardBooking,
+	PaymentTypeCardCheckIn,
+}
+
 func (e PaymentType) IsValid() bool {
 	switch e {
 	case PaymentTypeMerchant, PaymentTypeDirect, PaymentTypeCardBooking, PaymentTypeCardCheckIn:
@@ -650,6 +683,14 @@ const (
 	PluginStepTypeResponseAccess PluginStepType = "RESPONSE_ACCESS"
 	PluginStepTypeResponse       PluginStepType = "RESPONSE"
 )
+
+var AllPluginStepType = []PluginStepType{
+	PluginStepTypeRequest,
+	PluginStepTypeRequestAccess,
+	PluginStepTypeResponseOption,
+	PluginStepTypeResponseAccess,
+	PluginStepTypeResponse,
+}
 
 func (e PluginStepType) IsValid() bool {
 	switch e {
@@ -693,6 +734,17 @@ const (
 	PluginTypePostStep           PluginType = "POST_STEP"
 )
 
+var AllPluginType = []PluginType{
+	PluginTypePreStep,
+	PluginTypeHotelMap,
+	PluginTypeBoardMap,
+	PluginTypeRoomMap,
+	PluginTypeCurrencyConversion,
+	PluginTypeMarkup,
+	PluginTypeAggregation,
+	PluginTypePostStep,
+}
+
 func (e PluginType) IsValid() bool {
 	switch e {
 	case PluginTypePreStep, PluginTypeHotelMap, PluginTypeBoardMap, PluginTypeRoomMap, PluginTypeCurrencyConversion, PluginTypeMarkup, PluginTypeAggregation, PluginTypePostStep:
@@ -729,6 +781,12 @@ const (
 	PriceTypeNet    PriceType = "NET"
 	PriceTypeAmount PriceType = "AMOUNT"
 )
+
+var AllPriceType = []PriceType{
+	PriceTypeGross,
+	PriceTypeNet,
+	PriceTypeAmount,
+}
 
 func (e PriceType) IsValid() bool {
 	switch e {
@@ -776,6 +834,21 @@ const (
 	RateRulesTypeNonRefundable    RateRulesType = "NON_REFUNDABLE"
 )
 
+var AllRateRulesType = []RateRulesType{
+	RateRulesTypePackage,
+	RateRulesTypeOlder55,
+	RateRulesTypeOlder60,
+	RateRulesTypeOlder65,
+	RateRulesTypeCanaryResident,
+	RateRulesTypeBalearicResident,
+	RateRulesTypeLargeFamily,
+	RateRulesTypeHoneymoon,
+	RateRulesTypePublicServant,
+	RateRulesTypeUnemployed,
+	RateRulesTypeNormal,
+	RateRulesTypeNonRefundable,
+}
+
 func (e RateRulesType) IsValid() bool {
 	switch e {
 	case RateRulesTypePackage, RateRulesTypeOlder55, RateRulesTypeOlder60, RateRulesTypeOlder65, RateRulesTypeCanaryResident, RateRulesTypeBalearicResident, RateRulesTypeLargeFamily, RateRulesTypeHoneymoon, RateRulesTypePublicServant, RateRulesTypeUnemployed, RateRulesTypeNormal, RateRulesTypeNonRefundable:
@@ -810,6 +883,10 @@ type ServiceType string
 const (
 	ServiceTypeSkiPass ServiceType = "SKI_PASS"
 )
+
+var AllServiceType = []ServiceType{
+	ServiceTypeSkiPass,
+}
 
 func (e ServiceType) IsValid() bool {
 	switch e {
@@ -846,6 +923,11 @@ const (
 	StatusTypeOk StatusType = "OK"
 	StatusTypeRq StatusType = "RQ"
 )
+
+var AllStatusType = []StatusType{
+	StatusTypeOk,
+	StatusTypeRq,
+}
 
 func (e StatusType) IsValid() bool {
 	switch e {
@@ -889,6 +971,17 @@ const (
 	SupplementTypeActivity  SupplementType = "ACTIVITY"
 )
 
+var AllSupplementType = []SupplementType{
+	SupplementTypeSkiPass,
+	SupplementTypeLessons,
+	SupplementTypeMeals,
+	SupplementTypeEquipment,
+	SupplementTypeTicket,
+	SupplementTypeTransfers,
+	SupplementTypeGala,
+	SupplementTypeActivity,
+}
+
 func (e SupplementType) IsValid() bool {
 	switch e {
 	case SupplementTypeSkiPass, SupplementTypeLessons, SupplementTypeMeals, SupplementTypeEquipment, SupplementTypeTicket, SupplementTypeTransfers, SupplementTypeGala, SupplementTypeActivity:
@@ -924,6 +1017,11 @@ const (
 	UnitTimeTypeDay  UnitTimeType = "DAY"
 	UnitTimeTypeHour UnitTimeType = "HOUR"
 )
+
+var AllUnitTimeType = []UnitTimeType{
+	UnitTimeTypeDay,
+	UnitTimeTypeHour,
+}
 
 func (e UnitTimeType) IsValid() bool {
 	switch e {

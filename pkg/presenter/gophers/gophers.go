@@ -7,9 +7,9 @@ import (
 	"github.com/graph-gophers/graphql-go"
 	"github.com/travelgateX/go-io/log"
 	"net/http"
-	"presenters-benchmark/pkg/domainHotelCommon"
-	"presenters-benchmark/pkg/presenter"
-	"presenters-benchmark/pkg/presenter/gophers/resolver"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers/resolver"
 	"runtime"
 	"strconv"
 )

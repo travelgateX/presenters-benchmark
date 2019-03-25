@@ -1,7 +1,7 @@
 package domainHotelCommon
 
 import (
-	"presenters-benchmark/pkg/access"
+	"github.com/travelgateX/presenters-benchmark/pkg/access"
 )
 
 type OptionID struct {

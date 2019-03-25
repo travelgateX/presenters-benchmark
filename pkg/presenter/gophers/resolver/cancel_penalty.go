@@ -2,7 +2,7 @@ package graphResolver
 
 import (
 	"fmt"
-	"presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 	"strconv"
 )
 

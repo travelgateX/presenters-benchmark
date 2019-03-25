@@ -1,6 +1,6 @@
 package domainHotelCommon
 
-import "presenters-benchmark/pkg/access"
+import "github.com/travelgateX/presenters-benchmark/pkg/access"
 
 type Access struct {
 	AccessId      string
