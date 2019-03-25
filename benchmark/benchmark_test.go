@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+
 	"testing"
 	"time"
   
@@ -16,6 +17,9 @@ import (
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/rest"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/restmapping"
   "github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
+  
+	"presenters-benchmark/pkg/presenter/jsoniter"
+	"presenters-benchmark/pkg/presenter/jsonitermapping"
 )
 
 // Variables:
@@ -106,6 +110,8 @@ var funcs = []struct {
 	{"std json mapping", restmapping.Candidate{}},
 	{"ffjson mapping", ffjson.Candidate{}},
   {"simplejson", simplejson.Candidate{}},
+ 	{"rest jsoniter", jsoniter.Candidate{}},
+	{"rest jsoniter mapping", jsonitermapping.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {
@@ -199,6 +205,26 @@ func BenchmarkCandidate_rest_servicemodels_1_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+
+func BenchmarkCandidate_jsoniter_1_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsoniter.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 1,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+func BenchmarkCandidate_jsoniter_servicemodels_1_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsonitermapping.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 1,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+
 func BenchmarkCandidate_ffjson_servicemodels_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
@@ -252,6 +278,24 @@ func BenchmarkCandidate_rest_servicemodels_2000_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+
+func BenchmarkCandidate_jsoniter_2000_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsoniter.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 2000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+func BenchmarkCandidate_jsoniter_servicemodels_2000_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsonitermapping.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 2000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
 func BenchmarkCandidate_ffjson_servicemodels_2000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
@@ -306,6 +350,7 @@ func BenchmarkCandidate_rest_servicemodels_7000_high(b *testing.B) {
 	})
 }
 
+
 func BenchmarkCandidate_ffjson_servicemodels_7000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
@@ -358,6 +403,24 @@ func BenchmarkCandidate_rest_servicemodels_20000_high(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
+
+func BenchmarkCandidate_jsoniter_20000_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsoniter.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 20000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+func BenchmarkCandidate_jsoniter_servicemodels_20000_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsonitermapping.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 20000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
 func BenchmarkCandidate_ffjson_servicemodels_20000_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
@@ -415,6 +478,23 @@ func BenchmarkCandidate_rest_servicemodels_65536_high(b *testing.B) {
 func BenchmarkCandidate_ffjson_servicemodels_65536_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 65536,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+func BenchmarkCandidate_jsoniter_65536_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsoniter.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 65536,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+func BenchmarkCandidate_jsoniter_servicemodels_65536_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    jsonitermapping.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 65536,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -574,6 +654,7 @@ func BenchmarkCandidate_rest_servicemodels_7000_low(b *testing.B) {
 		ResolveScale: presenter.ResolveScaleLow,
 	})
 }
+
 func BenchmarkCandidate_ffjson_servicemodels_7000_low(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
