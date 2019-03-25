@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgen"
@@ -29,7 +29,7 @@ func BenchmarkSequential(b *testing.B) {
 	optionGen := presenter.NewOptionsGen()
 	for _, f := range funcs {
 		time.Sleep(2 * time.Second)
-		for optNumber := 1; optNumber <= 1; optNumber *= 2 {
+		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
 				b.Fatalf("Error creating Handler: %v", err)
@@ -109,7 +109,7 @@ var funcs = []struct {
 	{"ffjson mapping", ffjson.Candidate{}},
 	{"simplejson", simplejson.Candidate{}},
 	{"jsoniter", jsoniter.Candidate{}},
-	{"easyjson", easyjson.Candidate{}},
+	{"easyjson mapping", easyjsonmapping.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {

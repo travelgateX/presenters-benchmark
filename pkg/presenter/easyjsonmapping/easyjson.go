@@ -1,4 +1,4 @@
-package easyjson
+package easyjsonmapping
 
 import (
 	"encoding/json"
@@ -25,8 +25,7 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 		}
 
 		// deserialize and return option
-		// TODO aplicar la libreria EasyJson
-		jw := jwriter.Writer{NoEscapeHTML: true}
+		jw := jwriter.Writer{}
 		response := NewResponse(options)
 		response.MarshalEasyJSON(&jw)
 		if jw.Error != nil {

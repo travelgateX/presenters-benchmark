@@ -1,4 +1,4 @@
-package easyjson
+package easyjsonmapping
 
 import (
 	"github.com/travelgateX/presenters-benchmark/pkg/access"
