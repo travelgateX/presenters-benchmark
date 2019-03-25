@@ -5,10 +5,23 @@ package gqlgensm
 import (
 	"fmt"
 	"io"
-	"presenters-benchmark/pkg/common"
-	"presenters-benchmark/pkg/domainHotelCommon"
 	"strconv"
+
+	"github.com/travelgateX/presenters-benchmark/pkg/common"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 )
+
+type BookableOptionSearch interface {
+	IsBookableOptionSearch()
+}
+
+type Priceable interface {
+	IsPriceable()
+}
+
+type Response interface {
+	IsResponse()
+}
 
 type AddOn struct {
 	Key   string `json:"key"`
@@ -18,10 +31,6 @@ type AddOn struct {
 type AddOns struct {
 	Distribute   *string `json:"distribute"`
 	Distribution []AddOn `json:"distribution"`
-}
-
-type BookableOptionSearch interface {
-	IsBookableOptionSearch()
 }
 
 type CriteriaSearch struct {
@@ -62,14 +71,6 @@ func (HotelSearch) IsResponse() {}
 type HotelXQuery struct {
 	Search              *HotelSearch  `json:"search"`
 	SearchStatusService ServiceStatus `json:"searchStatusService"`
-}
-
-type Priceable interface {
-	IsPriceable()
-}
-
-type Response interface {
-	IsResponse()
 }
 
 type RoomCriteria struct {
@@ -134,6 +135,59 @@ type StatsRequest struct {
 	Accesses       []StatAccess `json:"Accesses"`
 }
 
+type PluginType string
+
+const (
+	PluginTypePreStep            PluginType = "PRE_STEP"
+	PluginTypeHotelMap           PluginType = "HOTEL_MAP"
+	PluginTypeBoardMap           PluginType = "BOARD_MAP"
+	PluginTypeRoomMap            PluginType = "ROOM_MAP"
+	PluginTypeCurrencyConversion PluginType = "CURRENCY_CONVERSION"
+	PluginTypeMarkup             PluginType = "MARKUP"
+	PluginTypeAggregation        PluginType = "AGGREGATION"
+	PluginTypePostStep           PluginType = "POST_STEP"
+)
+
+var AllPluginType = []PluginType{
+	PluginTypePreStep,
+	PluginTypeHotelMap,
+	PluginTypeBoardMap,
+	PluginTypeRoomMap,
+	PluginTypeCurrencyConversion,
+	PluginTypeMarkup,
+	PluginTypeAggregation,
+	PluginTypePostStep,
+}
+
+func (e PluginType) IsValid() bool {
+	switch e {
+	case PluginTypePreStep, PluginTypeHotelMap, PluginTypeBoardMap, PluginTypeRoomMap, PluginTypeCurrencyConversion, PluginTypeMarkup, PluginTypeAggregation, PluginTypePostStep:
+		return true
+	}
+	return false
+}
+
+func (e PluginType) String() string {
+	return string(e)
+}
+
+func (e *PluginType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PluginType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PluginType", str)
+	}
+	return nil
+}
+
+func (e PluginType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type PriceType string
 
 const (
@@ -141,6 +195,12 @@ const (
 	PriceTypeNet    PriceType = "NET"
 	PriceTypeAmount PriceType = "AMOUNT"
 )
+
+var AllPriceType = []PriceType{
+	PriceTypeGross,
+	PriceTypeNet,
+	PriceTypeAmount,
+}
 
 func (e PriceType) IsValid() bool {
 	switch e {
@@ -171,11 +231,76 @@ func (e PriceType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
+type RateRulesType string
+
+const (
+	RateRulesTypePackage          RateRulesType = "PACKAGE"
+	RateRulesTypeOlder55          RateRulesType = "OLDER55"
+	RateRulesTypeOlder60          RateRulesType = "OLDER60"
+	RateRulesTypeOlder65          RateRulesType = "OLDER65"
+	RateRulesTypeCanaryResident   RateRulesType = "CANARY_RESIDENT"
+	RateRulesTypeBalearicResident RateRulesType = "BALEARIC_RESIDENT"
+	RateRulesTypeLargeFamily      RateRulesType = "LARGE_FAMILY"
+	RateRulesTypeHoneymoon        RateRulesType = "HONEYMOON"
+	RateRulesTypePublicServant    RateRulesType = "PUBLIC_SERVANT"
+	RateRulesTypeUnemployed       RateRulesType = "UNEMPLOYED"
+	RateRulesTypeNormal           RateRulesType = "NORMAL"
+	RateRulesTypeNonRefundable    RateRulesType = "NON_REFUNDABLE"
+)
+
+var AllRateRulesType = []RateRulesType{
+	RateRulesTypePackage,
+	RateRulesTypeOlder55,
+	RateRulesTypeOlder60,
+	RateRulesTypeOlder65,
+	RateRulesTypeCanaryResident,
+	RateRulesTypeBalearicResident,
+	RateRulesTypeLargeFamily,
+	RateRulesTypeHoneymoon,
+	RateRulesTypePublicServant,
+	RateRulesTypeUnemployed,
+	RateRulesTypeNormal,
+	RateRulesTypeNonRefundable,
+}
+
+func (e RateRulesType) IsValid() bool {
+	switch e {
+	case RateRulesTypePackage, RateRulesTypeOlder55, RateRulesTypeOlder60, RateRulesTypeOlder65, RateRulesTypeCanaryResident, RateRulesTypeBalearicResident, RateRulesTypeLargeFamily, RateRulesTypeHoneymoon, RateRulesTypePublicServant, RateRulesTypeUnemployed, RateRulesTypeNormal, RateRulesTypeNonRefundable:
+		return true
+	}
+	return false
+}
+
+func (e RateRulesType) String() string {
+	return string(e)
+}
+
+func (e *RateRulesType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = RateRulesType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid RateRulesType", str)
+	}
+	return nil
+}
+
+func (e RateRulesType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type ServiceType string
 
 const (
 	ServiceTypeSkiPass ServiceType = "SKI_PASS"
 )
+
+var AllServiceType = []ServiceType{
+	ServiceTypeSkiPass,
+}
 
 func (e ServiceType) IsValid() bool {
 	switch e {

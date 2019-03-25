@@ -2,8 +2,8 @@ package gqlgen
 
 import (
 	"context"
-	"presenters-benchmark/pkg/domainHotelCommon"
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
 type Resolver struct {

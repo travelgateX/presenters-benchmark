@@ -11,108 +11,108 @@ resolver:
   type: Resolver
 models:
   RoomInput:    
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Occupancy
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Occupancy
   PaxInput:    
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Pax
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Pax
   HotelSettingsInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Settings
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Settings
   BusinessRulesInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.BusinessRules
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.BusinessRules
   HotelXSupplierInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Supplier
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Supplier
   PluginStepInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.PluginStep
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.PluginStep
   PluginsInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Plugin
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Plugin
   ParameterInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/access.Parameter
+    model: github.com/travelgateX/presenters-benchmark/pkg/access.Parameter
   SettingsBaseInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.SettingsBase
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.SettingsBase
   BusinessRulesType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.BusinessRulesType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.BusinessRulesType
   HotelXAccessInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Access
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Access
   PluginType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.PluginType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.PluginType
   PluginStepType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.PluginStepType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.PluginStepType
   ConfigurationInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/access.AccessConfiguration
+    model: github.com/travelgateX/presenters-benchmark/pkg/access.AccessConfiguration
   RateRulesType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/access.RateRulesType
+    model: github.com/travelgateX/presenters-benchmark/pkg/access.RateRulesType
   UrlsInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/access.Urls
+    model: github.com/travelgateX/presenters-benchmark/pkg/access.Urls
   HotelXFilterSearchInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/search.FilterSearch
+    model: github.com/travelgateX/presenters-benchmark/pkg/search.FilterSearch
   FilterInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/search.Filter
+    model: github.com/travelgateX/presenters-benchmark/pkg/search.Filter
   AccessFilterInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/search.TypeFilter
+    model: github.com/travelgateX/presenters-benchmark/pkg/search.TypeFilter
   HotelXPluginFilterInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.FilterPluginType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.FilterPluginType
   HotelXFilterPluginTypeInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.FilterPlugin
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.FilterPlugin
   RateRulesFilterInput:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/search.RateRuleFilter
+    model: github.com/travelgateX/presenters-benchmark/pkg/search.RateRuleFilter
 
   Error: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/common.AdviseMessage
+    model: github.com/travelgateX/presenters-benchmark/pkg/common.AdviseMessage
   Warning: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/common.AdviseMessage
+    model: github.com/travelgateX/presenters-benchmark/pkg/common.AdviseMessage
   AuditData: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/common.AuditData
+    model: github.com/travelgateX/presenters-benchmark/pkg/common.AuditData
   Transactions: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/common.Transactions
+    model: github.com/travelgateX/presenters-benchmark/pkg/common.Transactions
 
   HotelOptionSearch: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Option
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Option
   PaymentType: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.PaymentType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.PaymentType
   StatusType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.StatusType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.StatusType
   Occupancy: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Occupancy
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Occupancy
   Pax: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Pax
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Pax
   Room: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Room
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Room
   Bed: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Bed
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Bed
   Markup: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Markup
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Markup
   MarkupRuleType: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.MarkupRuleType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.MarkupRuleType
   Rule: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Rule
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Rule
   CancelPolicy: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPolicy
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.CancelPolicy
   CancelPenalty: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPenalty
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.CancelPenalty
   CancelPenaltyType: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.CancelPenaltyType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.CancelPenaltyType
   Price: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Price
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Price
   RatePlan: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.RatePlan
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.RatePlan
   Exchange: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Exchange
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Exchange
   RoomPrice: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.RoomPrice
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.RoomPrice
   PriceBreakdown: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.PriceBreakDown
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.PriceBreakDown
   Supplement: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Supplement
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Supplement
   SupplementType: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.SupplementType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.SupplementType
   ChargeType: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.ChargeType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.ChargeType
   UnitTimeType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.UnitTimeType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.UnitTimeType
   DurationType:
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.DurationType
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.DurationType
   Surcharge: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Surcharge
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Surcharge
   Promotion: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Promotion
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Promotion
   Resort: 
-    model: "presenters-benchmark/pkg/presenter"/gqlgensm/domainHotelCommon.Resort
+    model: github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon.Resort

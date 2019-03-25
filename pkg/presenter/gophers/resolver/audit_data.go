@@ -2,7 +2,7 @@ package graphResolver
 
 import (
 	"fmt"
-	"presenters-benchmark/pkg/common"
+	"github.com/travelgateX/presenters-benchmark/pkg/common"
 	"strconv"
 )
 

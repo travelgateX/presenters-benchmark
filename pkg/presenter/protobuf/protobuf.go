@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/golang/protobuf/proto"
 	"net/http"
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
 type Candidate struct{}

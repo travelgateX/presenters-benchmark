@@ -2,7 +2,7 @@ package gqlgensm
 
 import (
 	"context"
-	"presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
 )
 
 type Resolver struct {

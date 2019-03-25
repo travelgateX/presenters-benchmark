@@ -3,8 +3,8 @@ package gqlgensm
 import (
 	"github.com/99designs/gqlgen/handler"
 	"net/http"
-	"presenters-benchmark/pkg/domainHotelCommon"
-	"presenters-benchmark/pkg/presenter"
+	"github.com/travelgateX/presenters-benchmark/pkg/domainHotelCommon"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 )
 
 type Candidate struct{}
