@@ -25,18 +25,17 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 		}
 
 		// deserialize and return option
-		w.Write(prefix)
-		err := json.NewEncoder(w).Encode(options)
-		w.Write(sufix)
+		response := presenter.Response{}
+		response.Data.HotelX.Search.Options = options
+		b, err := json.Marshal(response)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+
+		w.Write(b)
 	}, nil
 }
 
 func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
 	return presenter.JSONUnmarshalOptions(b)
 }
-
-var prefix = []byte(`{"data": {"hotelX": {"search": {"options": `)
-var sufix = []byte(`,"errors": {"code": "","type": "","description": ""}}}}}`)
