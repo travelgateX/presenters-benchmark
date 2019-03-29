@@ -18,6 +18,7 @@ We are measuring the serialization of Options to an HTTP Response Body, where Op
 | Protobuf  | standard   |        	x	   	    |  	 ✓	   |
 
 *From service models: serialize directly from service models
+
 *Mapping: from application models to presentation models then serialize
 
 To add another implementation create its own package under 'pkg/presenter' and implement the interface:
