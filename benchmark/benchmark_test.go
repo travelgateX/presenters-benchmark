@@ -10,13 +10,13 @@ import (
 
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
+	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgen"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/jsoniter"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
-	"github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
+	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
+	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjsonmapping"
 )
@@ -101,17 +101,17 @@ var funcs = []struct {
 	Name      string
 	Candidate presenter.CandidateHandlerFunc
 }{
-	{"gophers", gophers.Candidate{}},
+	/*{"gophers", gophers.Candidate{}},
 	{"gqlgen mapping", gqlgen.Candidate{}},
 	//{"gqlgen service models", gqlgensm.Candidate{}},
 	{"protobuf mapping", protobuf.Candidate{}},
-	{"std json", stdjson.Candidate{}},
-	{"std json mapping", stdjsonmapping.Candidate{}},
+	*/{"std json", stdjson.Candidate{}},
+	/*{"std json mapping", stdjsonmapping.Candidate{}},
 	{"ffjson mapping", ffjson.Candidate{}},
 	{"simplejson", simplejson.Candidate{}},
-	{"jsoniter", jsoniter.Candidate{}},
+	{"jsoniter", jsoniter.Candidate{}},*/
 	{"easyjson", easyjson.Candidate{}},
-	{"easyjson mapping", easyjsonmapping.Candidate{}},
+	//{"easyjson mapping", easyjsonmapping.Candidate{}},
 }
 
 func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {
@@ -160,7 +160,7 @@ type candidateBenchmark struct {
 
 // HIGH
 
-/*func BenchmarkCandidate_gqlgen_1_high(b *testing.B) {
+func BenchmarkCandidate_gqlgen_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgen.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -169,7 +169,7 @@ type candidateBenchmark struct {
 	})
 }
 
-func BenchmarkCandidate_gqlgen_servicemodels_1_high(b *testing.B) {
+/*func BenchmarkCandidate_gqlgen_servicemodels_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    gqlgensm.Candidate{},
 		HTTPStatus:   http.StatusOK,
@@ -217,6 +217,15 @@ func BenchmarkCandidate_jsoniter_1_high(b *testing.B) {
 func BenchmarkCandidate_ffjson_servicemodels_1_high(b *testing.B) {
 	benchmarkCandidates(b, candidateBenchmark{
 		Candidate:    ffjson.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 1,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+func BenchmarkCandidate_easyjson_1_high(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    easyjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 1,
 		ResolveScale: presenter.ResolveScaleHigh,
@@ -396,6 +405,24 @@ func BenchmarkCandidate_ffjson_servicemodels_20000_high(b *testing.B) {
 		Candidate:    ffjson.Candidate{},
 		HTTPStatus:   http.StatusOK,
 		OptionNumber: 20000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+func BenchmarkCandidate_easyjson_1000_high_nobuff(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    easyjson.Candidate{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 1000,
+		ResolveScale: presenter.ResolveScaleHigh,
+	})
+}
+
+func BenchmarkCandidate_easyjson_1000_high_buffer(b *testing.B) {
+	benchmarkCandidates(b, candidateBenchmark{
+		Candidate:    easyjson.CandidateBuffer{},
+		HTTPStatus:   http.StatusOK,
+		OptionNumber: 1000,
 		ResolveScale: presenter.ResolveScaleHigh,
 	})
 }
