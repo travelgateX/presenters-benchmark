@@ -6,6 +6,10 @@ import (
 	"reflect"
 )
 
+/*
+	to generate a new file for EasyJson: https://github.com/mailru/easyjson:
+		go run $GOPATH/src/github.com/mailru/easyjson/easyjson/main.go -all $GOPATH/src/github.com/travelgateX/presenters-benchmark/pkg/presenter/option.go
+*/
 // easyjson:json
 type Response struct {
 	Data struct {
@@ -22,6 +26,7 @@ type Response struct {
 	} `json:"data"`
 }
 
+// easyjson:json
 type Option domainHotelCommon.Option
 
 func OptionEquals(opt1, opt2 *Option) bool {
@@ -47,7 +52,8 @@ func (optionsGen) Gen(n int) []*Option {
 
 	ret := make([]*Option, 0, n)
 	for k := 0; k < n; k++ {
-		e := Option(optObj)
+		tmp := optObj
+		e := Option(tmp)
 		ret = append(ret, &e)
 	}
 

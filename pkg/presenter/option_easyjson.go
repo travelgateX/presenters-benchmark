@@ -333,7 +333,7 @@ func easyjson2f5a9aebDecode2(in *jlexer.Lexer, out *struct {
 						if v1 == nil {
 							v1 = new(Option)
 						}
-						easyjson2f5a9aebDecodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(in, v1)
+						(*v1).UnmarshalEasyJSON(in)
 					}
 					out.Options = append(out.Options, v1)
 					in.WantComma()
@@ -382,7 +382,7 @@ func easyjson2f5a9aebEncode2(out *jwriter.Writer, in struct {
 				if v3 == nil {
 					out.RawString("null")
 				} else {
-					easyjson2f5a9aebEncodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(out, *v3)
+					(*v3).MarshalEasyJSON(out)
 				}
 			}
 			out.RawByte(']')
@@ -949,6 +949,30 @@ func easyjson2f5a9aebEncodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(
 		out.String(string(in.Token))
 	}
 	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Option) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjson2f5a9aebEncodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Option) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson2f5a9aebEncodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Option) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjson2f5a9aebDecodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Option) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson2f5a9aebDecodeGithubComTravelgateXPresentersBenchmarkPkgPresenter2(l, v)
 }
 func easyjson2f5a9aebDecodeGithubComTravelgateXPresentersBenchmarkPkgDomainHotelCommon5(in *jlexer.Lexer, out *domainHotelCommon.CancelPolicy) {
 	isTopLevel := in.IsStart()

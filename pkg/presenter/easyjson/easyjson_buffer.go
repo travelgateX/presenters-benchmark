@@ -5,13 +5,22 @@ import (
 	"github.com/mailru/easyjson/jwriter"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"net/http"
+
+	"github.com/mailru/easyjson/buffer"
 )
 
-type Candidate struct{}
+type CandidateBuffer struct{}
 
-var _ presenter.CandidateHandlerFunc = (*Candidate)(nil)
+var _ presenter.CandidateHandlerFunc = (*CandidateBuffer)(nil)
 
-func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
+func (CandidateBuffer) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, error) {
+	buffer.Init(
+		buffer.PoolConfig{
+			StartSize:  128,
+			PooledSize: 512 * 4,
+			MaxSize:    32768 * 10,
+		},
+	)
 	return func(w http.ResponseWriter, r *http.Request) {
 		var params struct {
 			Query         string                 `json:"query"`
@@ -41,29 +50,6 @@ func (Candidate) HandlerFunc(options []*presenter.Option) (http.HandlerFunc, err
 	}, nil
 }
 
-func (Candidate) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
+func (CandidateBuffer) UnmarshalOptions(b []byte) ([]*presenter.Option, error) {
 	return presenter.JSONUnmarshalOptions(b)
-}
-
-func (Candidate) ChannelHandlerFunc(optionsC <-chan *presenter.Option) (http.HandlerFunc, error) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		options := make([]*presenter.Option, 0, 4096)
-		for opt := range optionsC {
-			options = append(options, opt)
-		}
-		// deserialize and return option
-		jw := jwriter.Writer{}
-		response := presenter.Response{}
-		response.Data.HotelX.Search.Options = options
-		response.MarshalEasyJSON(&jw)
-		if jw.Error != nil {
-			http.Error(w, jw.Error.Error(), http.StatusInternalServerError)
-		}
-
-		_, err := jw.DumpTo(w)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		return
-	}, nil
 }

@@ -5,21 +5,60 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"runtime/pprof"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjson"
-	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/easyjsonmapping"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/ffjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gophers"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/gqlgen"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/jsoniter"
-	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
-	_ "github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/protobuf"
+	"github.com/travelgateX/presenters-benchmark/pkg/presenter/simplejson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjson"
 	"github.com/travelgateX/presenters-benchmark/pkg/presenter/stdjsonmapping"
 )
+
+var funcs = []struct {
+	Name      string
+	Candidate presenter.CandidateHandlerFunc
+}{
+	{"gophers", gophers.Candidate{}},
+	{"gqlgen mapping", gqlgen.Candidate{}},
+	//{"gqlgen service models", gqlgensm.Candidate{}}, // broken
+	{"protobuf mapping", protobuf.Candidate{}},
+	{"std json", stdjson.Candidate{}},
+	{"std json mapping", stdjsonmapping.Candidate{}},
+	{"ffjson mapping", ffjson.Candidate{}},
+	{"simplejson", simplejson.Candidate{}},
+	{"jsoniter", jsoniter.Candidate{}},
+	{"easyjson", easyjson.Candidate{}},
+	{"easyjson mapping", easyjsonmapping.Candidate{}},
+}
+
+var funcEasyJSON = []struct {
+	Name      string
+	Candidate presenter.CandidateHandlerFunc
+}{
+	{"easyjson", easyjson.Candidate{}},
+	{"easyjson parallel", easyjson.CandidateParallel{}},
+	{"easyjson parallel (int buf)", easyjson.CandidateParallelGzip{}},
+	{"easyjson parallel (int buf channel)", easyjson.CandidateParallelChannel{}},
+	{"easyjson parallel (int bigger buf channel)", easyjson.CandidateParallelChannelBiggerBuf{}},
+}
+
+var funcEasyJSONChannel = []struct {
+	Name      string
+	Candidate presenter.CandidateChannelHandlerFunc
+}{
+	{"easyjson sequential chan wait", easyjson.Candidate{}},
+	{"easyjson sequential chan per option", easyjson.CandidateParallel{}},
+}
 
 // Variables:
 // - Options
@@ -28,7 +67,7 @@ import (
 func BenchmarkSequential(b *testing.B) {
 	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
 	optionGen := presenter.NewOptionsGen()
-	for _, f := range funcs {
+	for _, f := range funcEasyJSON {
 		time.Sleep(2 * time.Second)
 		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
@@ -36,6 +75,18 @@ func BenchmarkSequential(b *testing.B) {
 				b.Fatalf("Error creating Handler: %v", err)
 			}
 			b.Run(fmt.Sprintf("%s/%d", f.Name, optNumber), func(b *testing.B) {
+				if false {
+					memProfile, err := os.Create("example-mem.prof")
+					if err != nil {
+						b.Fatal(err)
+					}
+					defer func() {
+						if err := pprof.WriteHeapProfile(memProfile); err != nil {
+							b.Fatal(err)
+						}
+						memProfile.Close()
+					}()
+				}
 				for i := 0; i < b.N; i++ {
 					req, err := http.NewRequest("POST", "/status", bytes.NewReader(body))
 					if err != nil {
@@ -63,9 +114,9 @@ func BenchmarkSequential(b *testing.B) {
 func BenchmarkParallel(b *testing.B) {
 	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
 	optionGen := presenter.NewOptionsGen()
-	for _, f := range funcs {
+	for _, f := range funcEasyJSON {
 		time.Sleep(2 * time.Second)
-		for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
+		for optNumber := 4096; optNumber <= 65536; optNumber *= 2 {
 			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
 				b.Fatalf("Error creating Handler: %v", err)
@@ -97,579 +148,187 @@ func BenchmarkParallel(b *testing.B) {
 	}
 }
 
-var funcs = []struct {
-	Name      string
-	Candidate presenter.CandidateHandlerFunc
-}{
-	/*{"gophers", gophers.Candidate{}},
-	{"gqlgen mapping", gqlgen.Candidate{}},
-	//{"gqlgen service models", gqlgensm.Candidate{}},
-	{"protobuf mapping", protobuf.Candidate{}},
-	*/{"std json", stdjson.Candidate{}},
-	/*{"std json mapping", stdjsonmapping.Candidate{}},
-	{"ffjson mapping", ffjson.Candidate{}},
-	{"simplejson", simplejson.Candidate{}},
-	{"jsoniter", jsoniter.Candidate{}},*/
-	{"easyjson", easyjson.Candidate{}},
-	//{"easyjson mapping", easyjsonmapping.Candidate{}},
-}
-
-func benchmarkCandidates(b *testing.B, cb candidateBenchmark) {
-	options := presenter.NewOptionsGen().Gen(cb.OptionNumber)
-	hf, err := cb.Candidate.HandlerFunc(options)
-	if err != nil {
-		b.Fatalf("Error creating Handler: %v", err)
-	}
-	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(cb.ResolveScale)
-	b.ResetTimer()
-
-	b.RunParallel(func(pb *testing.PB) {
-		for pb.Next() {
-			req, err := http.NewRequest("POST", "/status", bytes.NewReader(body))
+func BenchmarkSequentialGzip(b *testing.B) {
+	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
+	optionGen := presenter.NewOptionsGen()
+	for _, f := range funcEasyJSON {
+		time.Sleep(2 * time.Second)
+		for optNumber := 4096; optNumber <= 65536; optNumber *= 2 {
+			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
 			if err != nil {
-				b.Fatal(err)
+				b.Fatalf("Error creating Handler: %v", err)
 			}
-
-			// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(hf)
-
-			// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-			// directly and pass in our Request and ResponseRecorder.
-			handler.ServeHTTP(rr, req)
-
-			// Check the status code is what we expect.
-			if status := rr.Code; status != cb.HTTPStatus {
-				b.Errorf("handler returned wrong status code: got %v want %v, body: %s", status, cb.HTTPStatus, rr.Body.String())
+			if false {
+				memProfile, err := os.Create("example-mem-gzip_seq.prof")
+				if err != nil {
+					b.Fatal(err)
+				}
+				defer func() {
+					if err := pprof.WriteHeapProfile(memProfile); err != nil {
+						b.Fatal(err)
+					}
+					memProfile.Close()
+				}()
 			}
+			b.Run(fmt.Sprintf("%s/%d", f.Name, optNumber), func(b *testing.B) {
+				for i := 0; i < b.N; i++ {
+					req, err := http.NewRequest("POST", "/status", bytes.NewReader(body))
+					if err != nil {
+						b.Fatal(err)
+					}
+
+					// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+					rr := httptest.NewRecorder()
+					handler := http.HandlerFunc(hf)
+
+					// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+					// directly and pass in our Request and ResponseRecorder.
+					w, close := presenter.GzipCompress(rr)
+					handler.ServeHTTP(w, req)
+					close()
+
+					// Check the status code is what we expect.
+					if status := rr.Code; status != http.StatusOK {
+						b.Errorf("handler returned wrong status code: got %v want %v, body: %s", status, http.StatusOK, rr.Body.String())
+					}
+				}
+			})
 		}
-	})
+	}
 }
 
-type candidateBenchmark struct {
-	Candidate  presenter.CandidateHandlerFunc
-	HTTPStatus int
-	// OptionNumber are the number of options that each operation is going to return
-	OptionNumber int
-	// Scale of fields in the graph Request
-	// low: options with 1 field
-	// medium: options with half the fields
-	// high: options with all the fields
-	ResolveScale presenter.ResolveScale
+func BenchmarkParallelGzip(b *testing.B) {
+	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
+	optionGen := presenter.NewOptionsGen()
+	for _, f := range funcEasyJSON {
+		time.Sleep(10 * time.Second)
+		for optNumber := 4096; optNumber <= 65536; optNumber *= 2 {
+			hf, err := f.Candidate.HandlerFunc(optionGen.Gen(optNumber))
+			if err != nil {
+				b.Fatalf("Error creating Handler: %v", err)
+			}
+			b.Run(fmt.Sprintf("%s/%d", f.Name, optNumber), func(b *testing.B) {
+				b.RunParallel(func(pb *testing.PB) {
+					for pb.Next() {
+						req, err := http.NewRequest("POST", "/status", bytes.NewReader(body))
+						if err != nil {
+							b.Fatal(err)
+						}
+
+						// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+						rr := httptest.NewRecorder()
+						handler := http.HandlerFunc(hf)
+
+						// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+						// directly and pass in our Request and ResponseRecorder.
+						w, close := presenter.GzipCompress(rr)
+						handler.ServeHTTP(w, req)
+						close()
+
+						// Check the status code is what we expect.
+						if status := rr.Code; status != http.StatusOK {
+							b.Errorf("handler returned wrong status code: got %v want %v, body: %s", status, http.StatusOK, rr.Body.String())
+						}
+					}
+				})
+			})
+		}
+	}
 }
 
-// HIGH
+func BenchmarkSequentialChan(b *testing.B) {
+	body := presenter.NewSearchGraphQLRequester().SearchGraphQLRequest(presenter.ResolveScaleHigh)
+	optionGen := presenter.NewOptionsGen()
+	for _, f := range funcEasyJSONChannel {
+		time.Sleep(2 * time.Second)
+		for optNumber := 64; optNumber <= 65536; optNumber *= 2 {
+			opts := optionGen.Gen(optNumber)
 
-func BenchmarkCandidate_gqlgen_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
+			b.Run(fmt.Sprintf("%s/%d", f.Name, optNumber), func(b *testing.B) {
+				if false {
+					memProfile, err := os.Create("example-mem.prof")
+					if err != nil {
+						b.Fatal(err)
+					}
+					defer func() {
+						if err := pprof.WriteHeapProfile(memProfile); err != nil {
+							b.Fatal(err)
+						}
+						memProfile.Close()
+					}()
+				}
+				for i := 0; i < b.N; i++ {
+					optsC := make(chan *presenter.Option, optNumber)
+					for _, opt := range opts {
+						optsC <- opt
+					}
+					close(optsC)
+					hf, err := f.Candidate.ChannelHandlerFunc(optsC)
+					if err != nil {
+						b.Fatalf("Error creating Handler: %v", err)
+					}
+					req, err := http.NewRequest("POST", "/status", bytes.NewReader(body))
+					if err != nil {
+						b.Fatal(err)
+					}
+
+					// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+					rr := httptest.NewRecorder()
+					handler := http.HandlerFunc(hf)
+
+					// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
+					// directly and pass in our Request and ResponseRecorder.
+					handler.ServeHTTP(rr, req)
+
+					// Check the status code is what we expect.
+					if status := rr.Code; status != http.StatusOK {
+						b.Errorf("handler returned wrong status code: got %v want %v, body: %s", status, http.StatusOK, rr.Body.String())
+					}
+				}
+			})
+		}
+	}
 }
 
-/*func BenchmarkCandidate_gqlgen_servicemodels_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}*/
+var final interface{}
 
-func BenchmarkCandidate_gophers_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
+func BenchmarkIterateOptions(b *testing.B) {
+	optionGen := presenter.NewOptionsGen()
+	for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
+		opts := optionGen.Gen(optNumber)
+		b.Run(fmt.Sprintf("%s/%d", "iterate options", optNumber), func(b *testing.B) {
+			var ret *presenter.Option
+			for i := 0; i < b.N; i++ {
+				for _, opt := range opts {
+					ret = opt
+				}
+			}
+			final = ret
+		})
+	}
 }
 
-func BenchmarkCandidate_rest_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_rest_servicemodels_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_jsoniter_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsoniter.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_ffjson_servicemodels_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_easyjson_1_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    easyjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_2000_high(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 2000,
-//		ResolveScale: presenter.ResolveScaleHigh,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}*/
-
-func BenchmarkCandidate_gophers_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_rest_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_rest_servicemodels_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_jsoniter_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsoniter.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_ffjson_servicemodels_2000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 2000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_7000_high(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 7000,
-//		ResolveScale: presenter.ResolveScaleHigh,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-*/
-
-func BenchmarkCandidate_gophers_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_rest_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_rest_servicemodels_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_ffjson_servicemodels_7000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_gqlgen_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}*/
-
-func BenchmarkCandidate_gophers_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_rest_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_rest_servicemodels_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_jsoniter_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsoniter.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_ffjson_servicemodels_20000_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_easyjson_1000_high_nobuff(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    easyjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_easyjson_1000_high_buffer(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    easyjson.CandidateBuffer{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1000,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_65536_high(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 65536,
-//		ResolveScale: presenter.ResolveScaleHigh,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-*/
-
-func BenchmarkCandidate_gophers_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_rest_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_rest_servicemodels_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-func BenchmarkCandidate_ffjson_servicemodels_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-func BenchmarkCandidate_jsoniter_65536_high(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    jsoniter.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 65536,
-		ResolveScale: presenter.ResolveScaleHigh,
-	})
-}
-
-// Medium
-func BenchmarkCandidate_gqlgen_1_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_1_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-*/
-
-func BenchmarkCandidate_gophers_1_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_7000_medium(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 7000,
-//		ResolveScale: presenter.ResolveScaleMedium,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_7000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}*/
-
-func BenchmarkCandidate_gophers_7000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_20000_medium(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 20000,
-//		ResolveScale: presenter.ResolveScaleMedium,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_20000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-*/
-
-func BenchmarkCandidate_gophers_20000_medium(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleMedium,
-	})
-}
-
-// Low
-func BenchmarkCandidate_gqlgen_1_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgen.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_1_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}*/
-
-func BenchmarkCandidate_gophers_1_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 1,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_7000_low(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 7000,
-//		ResolveScale: presenter.ResolveScaleLow,
-//	})
-//}
-
-/*func BenchmarkCandidate_gqlgen_servicemodels_7000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gqlgensm.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-*/
-
-func BenchmarkCandidate_gophers_7000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-
-func BenchmarkCandidate_rest_servicemodels_7000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    stdjsonmapping.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-
-func BenchmarkCandidate_ffjson_servicemodels_7000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    ffjson.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 7000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
-}
-
-//func BenchmarkCandidate_gqlgen_20000_low(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgen.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 20000,
-//		ResolveScale: presenter.ResolveScaleLow,
-//	})
-//}
-
-//func BenchmarkCandidate_gqlgen_servicemodels_20000_low(b *testing.B) {
-//	benchmarkCandidates(b, candidateBenchmark{
-//		Candidate:    gqlgensm.Candidate{},
-//		HTTPStatus:   http.StatusOK,
-//		OptionNumber: 20000,
-//		ResolveScale: presenter.ResolveScaleLow,
-//	})
-//}
-
-func BenchmarkCandidate_gophers_20000_low(b *testing.B) {
-	benchmarkCandidates(b, candidateBenchmark{
-		Candidate:    gophers.Candidate{},
-		HTTPStatus:   http.StatusOK,
-		OptionNumber: 20000,
-		ResolveScale: presenter.ResolveScaleLow,
-	})
+func BenchmarkOptionChannel(b *testing.B) {
+	optionGen := presenter.NewOptionsGen()
+	for optNumber := 1; optNumber <= 65536; optNumber *= 2 {
+		opts := optionGen.Gen(optNumber)
+		b.Run(fmt.Sprintf("%s/%d", "iterate options", optNumber), func(b *testing.B) {
+			ch := make(chan *presenter.Option, optNumber)
+			wg := sync.WaitGroup{}
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for range ch {
+				}
+			}()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				for _, opt := range opts {
+					ch <- opt
+				}
+			}
+			close(ch)
+			wg.Wait()
+		})
+	}
 }
